@@ -1,13 +1,50 @@
-import React, { useRef } from "react";
-import { Box, Button } from "@mui/material";
+import React, { useRef, useState } from "react";
+import { Box, Button, CircularProgress } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import axios from "axios";
+import { showSuccessToast, showErrorToast } from "./ToastNotifier"; // import toasts
 
-export default function UploadButton() {
+export default function UploadButton({ setJobs }) {
   const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState("");
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) console.log("File uploaded:", file.name);
+    if (!file) return;
+
+    setFileName(file.name);
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("model", "sonar");
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        "https://jobsearchagent.onrender.com/jobs_from_resume",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const jobs = response.data.jobs;
+      console.log("resume respone=>>",jobs)
+      if (jobs && jobs.length > 0) {
+        showSuccessToast("Jobs fetched successfully!");
+        setJobs(jobs);
+      } else {
+        showErrorToast("No jobs found in your resume.");
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      showErrorToast("Failed to upload resume. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,12 +61,21 @@ export default function UploadButton() {
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
+        accept=".pdf,.doc,.docx"
         style={{ display: "none" }}
       />
+
       <Button
         variant="outlined"
-        startIcon={<CloudUploadOutlinedIcon sx={{ color: "#7b2ff2", fontSize: 22 }} />}
+        startIcon={
+          loading ? (
+            <CircularProgress size={16} color="inherit" />
+          ) : (
+            <CloudUploadOutlinedIcon sx={{ color: "#7b2ff2", fontSize: 22 }} />
+          )
+        }
         onClick={() => fileInputRef.current.click()}
+        disabled={loading}
         sx={{
           mt: 2,
           borderRadius: "30px",
@@ -47,7 +93,7 @@ export default function UploadButton() {
           },
         }}
       >
-        Upload Your Resume
+        {fileName || "Upload Your Resume"}
       </Button>
     </Box>
   );

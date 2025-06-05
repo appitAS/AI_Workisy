@@ -14,6 +14,7 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SchoolIcon from "@mui/icons-material/School";
 import SearchBar from "./SearchBar";
 
+// Microsoft Logo SVG
 const CompanyLogoOrAvatar = ({ logo, company }) => (
   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
     {logo ? (
@@ -38,62 +39,6 @@ const CompanyLogoOrAvatar = ({ logo, company }) => (
   </Box>
 );
 
-// const jobCardsData = [
-//   {
-//     title: "Sr UI/UX Designer And Developer",
-//     salary: "₹8,00,000 – 12,00,000 Lpa",
-//     tags: ["FULL TIME", "REMOTE", "2yr+ Exp"],
-//     description:
-//       "We are looking for a talented UI/UX Designer to create intuitive and visually appealing digital experiences...",
-//     skills: [
-//       "UI Design",
-//       "UX Research",
-//       "Wireframing & Prototyping",
-//       "Information Architecture",
-//       "Usability Testing",
-//       "User Persona Mapping",
-//       "Data Analysis",
-//     ],
-//     location: "Hyderabad",
-//     education: "Any Graduate",
-//   },
-//   {
-//     title: "Frontend React Developer",
-//     salary: "₹6,00,000 – 10,00,000 Lpa",
-//     tags: ["FULL TIME", "HYBRID", "3yr+ Exp"],
-//     description:
-//       "Looking for a React developer with solid skills in frontend libraries and clean coding practices...",
-//     skills: [
-//       "React.js",
-//       "JavaScript",
-//       "HTML5",
-//       "CSS3",
-//       "REST APIs",
-//       "Redux",
-//       "Responsive Design",
-//     ],
-//     location: "Bangalore",
-//     education: "B.Tech / B.E",
-//   },
-//   {
-//     title: "Product Designer",
-//     salary: "₹10,00,000 – 15,00,000 Lpa",
-//     tags: ["FULL TIME", "ONSITE", "4yr+ Exp"],
-//     description:
-//       "Creative product designer needed to build innovative and accessible interfaces for web and mobile apps...",
-//     skills: [
-//       "Figma",
-//       "Design Thinking",
-//       "User Research",
-//       "Prototyping",
-//       "Visual Design",
-//       "Interaction Design",
-//     ],
-//     location: "Pune",
-//     education: "Any Graduate",
-//   },
-// ];
-
 const JobCard = ({ jobs }) => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -104,7 +49,7 @@ const JobCard = ({ jobs }) => {
     console.log("Searching:", search);
     setTimeout(() => {
       setLoading(false);
-    }, 3000); // Simulated delay
+    }, 3000);
   };
 
   useEffect(() => {
@@ -119,10 +64,9 @@ const JobCard = ({ jobs }) => {
     <Box
       sx={{
         marginTop: "3rem",
-        padding: "1rem",
         display: "flex",
         flexDirection: "column",
-        pb: { xs: 10, sm: 10 }, // Padding bottom for search bar space
+        pb: { xs: 10, sm: 10 },
         background: "#fff",
       }}
     >
@@ -147,56 +91,44 @@ const JobCard = ({ jobs }) => {
         </Typography>
       </Box>
 
-      {/* Cards */}
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          p: { xs: 2, sm: 4 },
-          mt: 0.5,
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={3}
-          gap={4}
-          flexWrap="wrap"
-          justifyContent="center"
-          sx={{ width: "100%" }}
+      {/* Cards Grid */}
+      <Box sx={{ p: { xs: 2, sm: 4 }, mt: 0.5 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "24px",
+          }}
         >
-          {(jobs || []).map((job, index) => (
-            <Box
+          {jobs.map((job, index) => (
+            <Card
               key={index}
               sx={{
-                background: "#E6F0FA",
-                borderRadius: 6,
-                padding: "1.2rem 0.8rem",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: 400,
-                mx: "auto",
-                mb: 4,
+                flexBasis: {
+                  xs: "100%",
+                  sm: "calc(50% - 24px)",
+                  md: "calc(33.33% - 24px)",
+                },
+                maxWidth: 350,
+                p: 2,
+                borderRadius: "18px 18px 25px 25px",
+                background: "#fff",
+                position: "relative",
+                boxShadow: `
+                  #D2E8FF 0px 20px 0px 0px inset,
+                  #D2E8FF 10px 0px 0px 0px inset,
+                  #D2E8FF -10px 0px 0px 0px inset,
+                  #D2E8FF 0px -70px 0px 0px inset
+                `,
               }}
             >
-              <Card
-                elevation={0}
-                sx={{
-                  background: "#fff",
-                  borderRadius: 5,
-                  p: 3,
-                  mb: 2,
-                  boxShadow: "none",
-                  minHeight: { xs: 340, sm: 420 },
-                }}
-              >
+              <CardContent sx={{ px: 3, pt: 2.5, pb: 10 }}>
                 <CompanyLogoOrAvatar
                   logo={job.logo}
                   company={job.company_name}
                 />
+
                 <Typography
                   variant="h6"
                   sx={{ fontWeight: 700, mb: 0.5, color: "#222" }}
@@ -204,56 +136,38 @@ const JobCard = ({ jobs }) => {
                   {job.job_title}
                 </Typography>
                 <Typography
-                  variant="h6"
+                  variant="subtitle1"
                   sx={{
                     fontWeight: 500,
                     color: "#4b4b4b",
                     mb: 1.5,
+                    fontSize: 17,
                     letterSpacing: 0.1,
                   }}
                 >
                   {job.salary}
                 </Typography>
-                {job.job_type && (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ mb: 2 }}
+                  flexWrap="wrap"
+                >
                   <Chip
-                    key={job.job_type}
                     label={job.job_type}
-                    size="medium"
+                    size="small"
                     sx={{
-                      background: "#fff",
+                      background: "#E6F0FA",
                       color: "#1976d2",
                       fontWeight: 600,
-                      fontSize: 14,
-                      borderRadius: 3,
-                      p: 1.2,
-                      boxShadow: "0 1px 6px 0 rgba(0, 0, 0, 0.5)",
-                      mr: 1,
-                      mb: 1,
+                      fontSize: 13,
+                      borderRadius: 2,
                     }}
                   />
-                )}
-                <Stack direction="row" gap={0.5} sx={{ mb: 2 }} flexWrap="wrap">
-                  {(job.tags || []).map((label) => (
-                    <Chip
-                      key={label}
-                      label={label}
-                      size="medium"
-                      sx={{
-                        background: "#fff",
-                        color: "#1976d2",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        borderRadius: 3,
-                        p: 1.2,
-                        boxShadow: "0 1px 6px 0 rgba(0, 0, 0, 0.5)",
-                        mr: 1,
-                        mb: 1,
-                      }}
-                    />
-                  ))}
                 </Stack>
+
                 <Typography
-                  variant="subtitle1"
+                  variant="subtitle2"
                   sx={{ fontWeight: 700, mb: 0.5, color: "#222" }}
                 >
                   Job Description
@@ -264,126 +178,123 @@ const JobCard = ({ jobs }) => {
                 >
                   {job.job_description}
                 </Typography>
+
                 <Typography
-                  variant="subtitle1"
+                  variant="subtitle2"
                   sx={{ fontWeight: 700, mb: 0.5, color: "#222" }}
                 >
                   Skills
                 </Typography>
-                <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
-                  {(job.skills || []).map((skill) => (
+                <Stack
+                  direction="row"
+                  flexWrap="wrap"
+                  spacing={1}
+                  sx={{ mb: 2 ,rowGap:0.3}}
+                >
+                  {job.skills?.map((skill, idx) => (
                     <Chip
-                      key={skill}
+                      key={idx}
                       label={skill}
-                      size="medium"
+                      size="small"
                       variant="outlined"
                       sx={{
-                        borderColor: "#1976d2",
+                        borderColor: "#D2E8FF",
                         color: "#1976d2",
                         fontWeight: 500,
+                        mt: 2,
+                        mb: 2,
                         borderRadius: 3,
-                        fontSize: 15,
-                        p: 1,
-                        background: "#fff",
+                        fontSize: 13,
                       }}
                     />
                   ))}
                 </Stack>
+
                 <Stack
-                  direction="row"
-                  justifyContent="start"
-                  gap={6}
+                  direction="column"
+                  spacing={2}
+                  justifyContent="space-between"
                   alignItems="flex-start"
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 1 }}
                 >
                   <Stack direction="row" alignItems="flex-start" gap={1}>
+                    <SchoolIcon
+                      sx={{ color: "#1976d2", fontSize: 20, mt: "1px" }}
+                    />
                     <Box>
-                      <Typography
-                        variant="caption"
-                        sx={{ fontWeight: 500, fontSize: 15 }}
-                      >
-                        Job Location
-                      </Typography>
                       <Typography
                         variant="body2"
-                        sx={{
-                          color: "#222",
-                          fontWeight: 600,
-                          lineHeight: 1,
-                          fontSize: 16,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        <LocationOnIcon
-                          sx={{ color: "#1976d2", fontSize: 22, mt: "2px" }}
-                        />
-                        {job.job_location}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  <Stack direction="row" alignItems="center" gap={1}>
-                    <Box>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontWeight: 500,
-                          fontSize: 15,
-                          textAlign: "center",
-                        }}
+                        sx={{ color: "#222", fontWeight: 600 }}
                       >
                         Education
                       </Typography>
                       <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#222",
-                          fontWeight: 600,
-                          lineHeight: 1,
-                          fontSize: 16,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "4px",
-                          textAlign: "center",
-                        }}
+                        variant="caption"
+                        sx={{ color: "#222", fontWeight: 500, lineHeight: 1 }}
                       >
-                        <SchoolIcon
-                          sx={{ color: "#1976d2", fontSize: 22, mt: "2px" }}
-                        />
                         {job.education_qualification}
                       </Typography>
                     </Box>
                   </Stack>
+                  <Stack direction="row" alignItems="flex-start" gap={1}>
+                    <LocationOnIcon
+                      sx={{ color: "#1976d2", fontSize: 20, mt: "2px" }}
+                    />
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "#222", fontWeight: 600 }}
+                      >
+                        Job Location
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "#222", fontWeight: 500, lineHeight: 1 }}
+                      >
+                        {job.job_location}
+                      </Typography>
+                    </Box>
+                  </Stack>
                 </Stack>
-              </Card>
-              <Button
-                variant="contained"
-                fullWidth
+              </CardContent>
+
+              <Box
                 sx={{
-                  background: "#1976d2",
-                  color: "#fff",
-                  borderRadius: 5,
-                  fontWeight: 700,
-                  fontSize: 18,
-                  textTransform: "none",
-                  boxShadow: "none",
-                  width: "100%",
-                  "&:hover": {
-                    backgroundColor: "#1565c0",
-                  },
+                  py: 0.5,
+                  px: 0.5,
+                  position: "absolute",
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
                 }}
               >
-                View Details
-              </Button>
-            </Box>
+                <Button
+                  href={job.job_url}
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    color: "white",
+                    borderRadius: 5,
+                    fontWeight: 600,
+                    fontSize: 16,
+                    textTransform: "none",
+                    boxShadow: "none",
+                    py: 0.5,
+                    "&:hover": {
+                      backgroundColor: "#1976d2",
+                      color: "white",
+                    },
+                  }}
+                >
+                  View Jobs
+                </Button>
+              </Box>
+            </Card>
           ))}
-        </Stack>
+        </Box>
       </Box>
 
+      {/* Search Bar Fixed Bottom */}
       <Box
         sx={{
           width: "100vw",
@@ -411,4 +322,5 @@ const JobCard = ({ jobs }) => {
     </Box>
   );
 };
+
 export default JobCard;

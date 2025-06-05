@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
@@ -11,8 +7,13 @@ import ModelDropdown from "./ModelDropdown";
 import SearchBar from "./SearchBar";
 import UploadButton from "./UploadButton";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import {
+  showSuccessToast,
+  showErrorToast,
+  showNoJobsToast,
+} from "./ToastNotifier";
+
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
@@ -31,34 +32,31 @@ export default function Layout({ setJobs }) {
     setLoading(true);
 
     try {
-      const response = await axios.post("https://jobsearchagent.onrender.com/jobs", {
-        model: selectedModel.name,
-        user_input: search,
-      });
+      const response = await axios.post(
+        "https://jobsearchagent.onrender.com/jobs",
+        {
+          model: selectedModel.name,
+          user_input: search,
+        }
+      );
 
-      if (response.data && response.data.jobs) {
-        setJobs(response.data.jobs);
+      const jobs = response.data.jobs;
+      console.log("propts response",jobs)
+
+      if (jobs && jobs.length > 0) {
+        setJobs(jobs);
+        showSuccessToast("Jobs fetched successfully.");
       } else {
-        throw new Error("No jobs found. Try a different search.");
+        showNoJobsToast("No jobs found. Try another keyword.");
       }
     } catch (err) {
-      setTimeout(() => {
-        const errorMsg =
-          err.response?.data?.error || "Something went wrong. Please try again.";
-        toast.error(errorMsg, {
-          position: "top-right",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "colored",
-        });
-        setLoading(false);
-      }, 1500);
-      return;
+      const errorMsg =
+        err.response?.data?.error ||
+        "Something went wrong. Please try again.";
+      showErrorToast(errorMsg);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -85,7 +83,8 @@ export default function Layout({ setJobs }) {
         justifyContent: "center",
       }}
     >
-      <ToastContainer />
+      {/* Global toast container */}
+      <ToastContainer  />
 
       <Box sx={{ textAlign: "center" }}>
         <Typography
@@ -139,7 +138,6 @@ export default function Layout({ setJobs }) {
           loading={loading}
           onSearch={handleSearch}
         />
-       
       </Box>
 
       <Box
@@ -183,7 +181,7 @@ export default function Layout({ setJobs }) {
         </Typography>
       </Divider>
 
-      <UploadButton />
+      <UploadButton setJobs={setJobs} />
 
       <Box
         sx={{
