@@ -36,7 +36,7 @@ const handleSearch = async () => {
     const storedUserId = sessionStorage.getItem("job_session_id");
 
     // ⏺ Make API call
-    const response = await axios.post("http://localhost:5000/api/jobs", {
+    const response = await axios.post(" https://workisybackendnodejs.onrender.com/api/jobs", {
       model: selectedModel.name,
       message: search,
       userId: storedUserId || null, // Send null if not available
