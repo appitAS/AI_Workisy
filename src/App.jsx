@@ -1,29 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Layout from "./Components/Layout";
-import Cards from "./Components/Crads";
 import JobCards from "./Components/JobCards";
-import MainPage from "./Components/AuthMainPage";
-
-
+import { ToastContainer } from "react-toastify";
 function App() {
-  const [jobs, setJobs] = useState([]);
-
-  console.log("jobs=>",jobs)
-
   return (
-    <div>
+    <Router>
+       {/* Global toast container */}
+      <ToastContainer />
+
       <Navbar />
-
-      {/* Show Layout only when there are no jobs */}
-      {/* {jobs.length === 0 && <Layout setJobs={setJobs} />} */}
-      <JobCards jobs={jobs} />
-<Layout setJobs={setJobs} />
-      {/* Show Cards only when jobs exist */}
-      {/* {jobs.length > 0 && <JobCards jobs={jobs} />} */}
-
-      {/* <MainPage /> */}
-    </div>
+      <Routes>
+        <Route path="/" element={<Layout />} />
+        <Route path="/jobs" element={<JobCards />} />
+      </Routes>
+    </Router>
   );
 }
 

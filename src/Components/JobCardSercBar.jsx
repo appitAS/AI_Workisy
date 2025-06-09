@@ -42,7 +42,7 @@ export default function JobCardSearchBar() {
     if (!searchText.trim()) return;
 
     setLoading(true);
-     setJobs([]);
+    setJobs([]);
 
     if (location.pathname !== "/jobs") {
       navigate("/jobs");
@@ -94,7 +94,7 @@ export default function JobCardSearchBar() {
     <Box
       sx={{
         position: "relative",
-        borderRadius: 10,
+        borderRadius: 1,
         boxShadow: "0 2px 12px 0 rgba(123,47,242,0.07)",
         background: "#fff",
         border: "3px solid #D2E8FF",

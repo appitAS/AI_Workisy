@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,7 +11,10 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SchoolIcon from "@mui/icons-material/School";
-import SearchBar from "./SearchBar";
+import JobCardSearchBar from "./JobCardSercBar";
+import useJobStore from "../store/jobStore";
+import BackButton from "./BackButton";
+import JobCardSkeleton from "./JobCardSkeleton"
 
 // Microsoft Logo SVG
 const CompanyLogoOrAvatar = ({ logo, company }) => (
@@ -39,26 +41,9 @@ const CompanyLogoOrAvatar = ({ logo, company }) => (
   </Box>
 );
 
-const JobCard = ({ jobs }) => {
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSearch = () => {
-    if (!search.trim()) return;
-    setLoading(true);
-    console.log("Searching:", search);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  };
-
-  useEffect(() => {
-    const handleEnter = (e) => {
-      if (e.key === "Enter") handleSearch();
-    };
-    window.addEventListener("keydown", handleEnter);
-    return () => window.removeEventListener("keydown", handleEnter);
-  }, [search]);
+const JobCard = () => {
+ const { jobs } = useJobStore();
+  const isLoading = jobs.length === 0;
 
   return (
     <Box
@@ -71,6 +56,8 @@ const JobCard = ({ jobs }) => {
       }}
     >
       {/* Top message */}
+      <BackButton />
+
       <Box sx={{ px: { xs: 2, sm: 33 }, pt: 4 }}>
         <Typography
           sx={{
@@ -101,7 +88,9 @@ const JobCard = ({ jobs }) => {
             gap: "24px",
           }}
         >
-          {jobs.map((job, index) => (
+           {isLoading
+            ? Array.from({ length: 6 }).map((_, i) => <JobCardSkeleton key={i} />)
+            : jobs.map((job, index) => (
             <Card
               key={index}
               sx={{
@@ -189,7 +178,7 @@ const JobCard = ({ jobs }) => {
                   direction="row"
                   flexWrap="wrap"
                   spacing={1}
-                  sx={{ mb: 2 ,rowGap:0.3}}
+                  sx={{ mb: 2, rowGap: 0.3 }}
                 >
                   {job.skills?.map((skill, idx) => (
                     <Chip
@@ -295,7 +284,7 @@ const JobCard = ({ jobs }) => {
       </Box>
 
       {/* Search Bar Fixed Bottom */}
-      {/* <Box
+      <Box
         sx={{
           width: "100vw",
           position: "fixed",
@@ -311,14 +300,9 @@ const JobCard = ({ jobs }) => {
             p: 2,
           }}
         >
-          <SearchBar
-            search={search}
-            setSearch={setSearch}
-            loading={loading}
-            onSearch={handleSearch}
-          />
+          <JobCardSearchBar />
         </Box>
-      </Box> */}
+      </Box>
     </Box>
   );
 };

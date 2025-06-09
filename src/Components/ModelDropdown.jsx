@@ -8,17 +8,25 @@ import {
   Chip,
   ListItemIcon,
   IconButton,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import useJobStore from "../store/jobStore";
 
 const allModels = [
   { label: "SNR", name: "sonar", comment: "Perplexity's fast model" },
-  { label: "SNR-Pro", name: "sonar-pro", comment: "Anthropic's advanced model", badge: "new", badgeColor: "primary" }
+  {
+    label: "SNR-Pro",
+    name: "sonar-pro",
+    comment: "Anthropic's advanced model",
+    badge: "new",
+    badgeColor: "primary",
+  },
 ];
 
-export default function ModelDropdown({ onSelect }) {
+export default function ModelDropdown() {
+  const { setOnselectedModel } = useJobStore();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedModel, setSelectedModel] = useState(allModels[0]);
 
@@ -28,7 +36,7 @@ export default function ModelDropdown({ onSelect }) {
   const handleSelect = (model) => {
     setSelectedModel(model);
     setAnchorEl(null);
-    if (onSelect) onSelect(model);
+    if (setOnselectedModel) setOnselectedModel(model);
   };
 
   const handleMoreClick = (e) => {
@@ -40,7 +48,15 @@ export default function ModelDropdown({ onSelect }) {
   };
 
   return (
-    <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap", ml: '2rem' }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        alignItems: "center",
+        flexWrap: "wrap",
+        ml: "2rem",
+      }}
+    >
       {mainModels.map((model) => (
         <Tooltip key={model.name} title={model.comment} arrow placement="top">
           <Button
@@ -52,7 +68,8 @@ export default function ModelDropdown({ onSelect }) {
               fontSize: 11,
               borderRadius: 10,
               textTransform: "none",
-              backgroundColor: selectedModel.name === model.name ? "black" : "#f5f5f5",
+              backgroundColor:
+                selectedModel.name === model.name ? "black" : "#f5f5f5",
               color: selectedModel.name === model.name ? "#fff" : "#333",
               fontWeight: 500,
               boxShadow: selectedModel.name === model.name ? 2 : 0,
@@ -99,7 +116,12 @@ export default function ModelDropdown({ onSelect }) {
         }}
       >
         {extraModels.map((model) => (
-          <Tooltip key={model.name} title={model.comment} arrow placement="right">
+          <Tooltip
+            key={model.name}
+            title={model.comment}
+            arrow
+            placement="right"
+          >
             <MenuItem
               onClick={() => handleSelect(model)}
               sx={{
@@ -137,7 +159,10 @@ export default function ModelDropdown({ onSelect }) {
                     />
                   )}
                 </Typography>
-                <Typography variant="caption" sx={{ fontSize: 11, opacity: 0.65 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ fontSize: 11, opacity: 0.65 }}
+                >
                   {model.name}
                 </Typography>
               </Box>

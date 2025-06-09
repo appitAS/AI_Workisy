@@ -6,13 +6,6 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import ModelDropdown from "./ModelDropdown";
 import SearchBar from "./SearchBar";
 import UploadButton from "./UploadButton";
-import axios from "axios";
-import { ToastContainer } from "react-toastify";
-import {
-  showSuccessToast,
-  showErrorToast,
-  showNoJobsToast,
-} from "./ToastNotifier";
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
@@ -21,61 +14,8 @@ const GradientText = styled("span")({
   fontWeight: 700,
 });
 
-export default function Layout({ setJobs }) {
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState({ name: "sonar" });
-
-const handleSearch = async () => {
-  if (!search.trim()) return;
-
-  setLoading(true);
-
-  try {
-    // ⏺ Retrieve existing userId from sessionStorage
-    const storedUserId = sessionStorage.getItem("job_session_id");
-
-    // ⏺ Make API call
-    const response = await axios.post(" https://workisybackendnodejs.onrender.com/api/jobs", {
-      model: selectedModel.name,
-      message: search,
-      userId: storedUserId || null, // Send null if not available
-    });
-
-    // ⏺ Destructure userId and jobs from response
-    const { userId: newUserId, jobs } = response.data?.data || {};
-
-    // ⏺ Store userId in sessionStorage if it’s newly received
-    if (newUserId && !storedUserId) {
-      sessionStorage.setItem("job_session_id", newUserId);
-    }
-
-    // ⏺ Display jobs or no jobs toast
-    if (Array.isArray(jobs) && jobs.length > 0) {
-      setJobs(jobs);
-      showSuccessToast("Jobs fetched successfully.");
-    } else {
-      setJobs([]); // clear previous jobs
-      showNoJobsToast("No jobs found. Try another keyword.");
-    }
-
-  } catch (err) {
-    // ⏺ Handle and display error
-    const errorMsg =
-      err?.response?.data?.error || "Something went wrong. Please try again.";
-    showErrorToast(errorMsg);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  useEffect(() => {
-    const handleEnter = (e) => {
-      if (e.key === "Enter") handleSearch();
-    };
-    window.addEventListener("keydown", handleEnter);
-    return () => window.removeEventListener("keydown", handleEnter);
-  }, [search, selectedModel]);
+export default function Layout() {
+  
 
   return (
     <Box
@@ -93,9 +33,6 @@ const handleSearch = async () => {
         justifyContent: "center",
       }}
     >
-      {/* Global toast container */}
-      <ToastContainer />
-
       <Box sx={{ textAlign: "center" }}>
         <Typography
           variant="h3"
@@ -144,12 +81,7 @@ const handleSearch = async () => {
           Ask AI
         </Typography>
 
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-          loading={loading}
-          onSearch={handleSearch}
-        />
+        <SearchBar/>
       </Box>
 
       <Box
@@ -175,7 +107,7 @@ const handleSearch = async () => {
           <LightbulbOutlinedIcon sx={{ color: "#7b2ff2", fontSize: 18 }} />
           Try our Latest AI Models
         </Typography>
-        <ModelDropdown onSelect={setSelectedModel} />
+        <ModelDropdown />
       </Box>
 
       <Divider
@@ -193,7 +125,7 @@ const handleSearch = async () => {
         </Typography>
       </Divider>
 
-      <UploadButton setJobs={setJobs} />
+      {/* <UploadButton setJobs={setJobs}/> */}
 
       <Box
         sx={{

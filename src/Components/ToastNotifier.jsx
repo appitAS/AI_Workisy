@@ -3,13 +3,13 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Styles/customToastStyles.css"; // custom styles
 
-export const showSuccessToast = (message) => {
-  toast.success(message, {
-    position: "top-right",
-    autoClose: 3000,
-    className: "toast-success",
-  });
-};
+// export const showSuccessToast = (message) => {
+//   toast.success(message, {
+//     position: "top-right",
+//     autoClose: 3000,
+//     className: "toast-success",
+//   });
+// };
 
 export const showNoJobsToast = (message) => {
   toast.info(message, {

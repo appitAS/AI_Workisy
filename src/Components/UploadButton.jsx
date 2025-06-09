@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Box, Button, CircularProgress } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import axios from "axios";
-import { showSuccessToast, showErrorToast } from "./ToastNotifier"; // import toasts
+import {  showErrorToast } from "./ToastNotifier"; // import toasts
 
 export default function UploadButton({ setJobs }) {
   const fileInputRef = useRef(null);
@@ -22,7 +22,7 @@ export default function UploadButton({ setJobs }) {
 
     try {
       const response = await axios.post(
-        "https://jobsearchagent.onrender.com/jobs_from_resume",
+        "https://workisybackendnodejs.onrender.com/api/jobs",
         formData,
         {
           headers: {
@@ -34,7 +34,7 @@ export default function UploadButton({ setJobs }) {
       const jobs = response.data.jobs;
       console.log("resume respone=>>",jobs)
       if (jobs && jobs.length > 0) {
-        showSuccessToast("Jobs fetched successfully!");
+        // showSuccessToast("Jobs fetched successfully!");
         setJobs(jobs);
       } else {
         showErrorToast("No jobs found in your resume.");
