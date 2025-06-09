@@ -295,7 +295,7 @@ const JobCard = ({ jobs }) => {
       </Box>
 
       {/* Search Bar Fixed Bottom */}
-      <Box
+      {/* <Box
         sx={{
           width: "100vw",
           position: "fixed",
@@ -318,7 +318,7 @@ const JobCard = ({ jobs }) => {
             onSearch={handleSearch}
           />
         </Box>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

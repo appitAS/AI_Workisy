@@ -14,7 +14,6 @@ import {
   showNoJobsToast,
 } from "./ToastNotifier";
 
-
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
   WebkitBackgroundClip: "text",
@@ -27,37 +26,48 @@ export default function Layout({ setJobs }) {
   const [loading, setLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState({ name: "sonar" });
 
-  const handleSearch = async () => {
-    if (!search.trim()) return;
-    setLoading(true);
+const handleSearch = async () => {
+  if (!search.trim()) return;
 
-    try {
-      const response = await axios.post(
-        "https://jobsearchagent.onrender.com/jobs",
-        {
-          model: selectedModel.name,
-          user_input: search,
-        }
-      );
+  setLoading(true);
 
-      const jobs = response.data.jobs;
-      console.log("propts response",jobs)
+  try {
+    // ⏺ Retrieve existing userId from sessionStorage
+    const storedUserId = sessionStorage.getItem("job_session_id");
 
-      if (jobs && jobs.length > 0) {
-        setJobs(jobs);
-        showSuccessToast("Jobs fetched successfully.");
-      } else {
-        showNoJobsToast("No jobs found. Try another keyword.");
-      }
-    } catch (err) {
-      const errorMsg =
-        err.response?.data?.error ||
-        "Something went wrong. Please try again.";
-      showErrorToast(errorMsg);
-    } finally {
-      setLoading(false);
+    // ⏺ Make API call
+    const response = await axios.post("http://localhost:5000/api/jobs", {
+      model: selectedModel.name,
+      message: search,
+      userId: storedUserId || null, // Send null if not available
+    });
+
+    // ⏺ Destructure userId and jobs from response
+    const { userId: newUserId, jobs } = response.data?.data || {};
+
+    // ⏺ Store userId in sessionStorage if it’s newly received
+    if (newUserId && !storedUserId) {
+      sessionStorage.setItem("job_session_id", newUserId);
     }
-  };
+
+    // ⏺ Display jobs or no jobs toast
+    if (Array.isArray(jobs) && jobs.length > 0) {
+      setJobs(jobs);
+      showSuccessToast("Jobs fetched successfully.");
+    } else {
+      setJobs([]); // clear previous jobs
+      showNoJobsToast("No jobs found. Try another keyword.");
+    }
+
+  } catch (err) {
+    // ⏺ Handle and display error
+    const errorMsg =
+      err?.response?.data?.error || "Something went wrong. Please try again.";
+    showErrorToast(errorMsg);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     const handleEnter = (e) => {
@@ -84,7 +94,7 @@ export default function Layout({ setJobs }) {
       }}
     >
       {/* Global toast container */}
-      <ToastContainer  />
+      <ToastContainer />
 
       <Box sx={{ textAlign: "center" }}>
         <Typography
@@ -114,7 +124,9 @@ export default function Layout({ setJobs }) {
         </Typography>
       </Box>
 
-      <Box sx={{ width: { xs: "100%", sm: 500, md: 650 }, mt: { xs: 6, md: 8 } }}>
+      <Box
+        sx={{ width: { xs: "100%", sm: 500, md: 650 }, mt: { xs: 6, md: 8 } }}
+      >
         <Typography
           sx={{
             mb: 1,
