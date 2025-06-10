@@ -259,6 +259,7 @@ const JobCard = () => {
               >
                 <Button
                   href={job.job_url}
+                  target="_blank"
                   variant="contained"
                   fullWidth
                   sx={{
