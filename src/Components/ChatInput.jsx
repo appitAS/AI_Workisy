@@ -86,7 +86,7 @@ const LargeActionButton = styled(Button)(({ theme }) => ({
 
 const ChatInput = () => {
   const [searchText, setSearchText] = useState("");
-  const { onselectedModel, setJobs, setIsLoading, isLoading, setPrompt } =
+  const { onselectedModel, setJobs, setIsLoading, isLoading, setPrompt,setOnselectedModel } =
     useJobStore();
 
   const navigate = useNavigate();
@@ -177,7 +177,7 @@ const ChatInput = () => {
         variant="outlined"
         fullWidth
         style={{
-          height: "300px", // Taller input like DeepSeek
+          height: "250px", // Taller input like DeepSeek
         }}
       />
 
@@ -195,11 +195,16 @@ const ChatInput = () => {
       >
         <ModelSelect
           value={model}
-          onChange={(e) => setModel(e.target.value)}
+          onChange={(e) => {
+            cosolel.log(e.target.value);
+            setModel(e.target.value)}}
           variant="outlined"
+          style={{
+            fontSize: "16px",
+          }}
         >
           <MenuItem value="sonar">sonar</MenuItem>
-          <MenuItem value="sonar pro">sonar pro</MenuItem>
+          <MenuItem value="sonar-pro">sonar pro</MenuItem>
         </ModelSelect>
         <Box
           sx={{
@@ -212,9 +217,9 @@ const ChatInput = () => {
         >
           Search
         </LargeActionButton> */}
-          <ActionButton>
+          {/* <ActionButton>
             <AttachFileIcon />
-          </ActionButton>
+          </ActionButton> */}
           <ActionButton
             disabled={!searchText}
             onClick={handleSearch}

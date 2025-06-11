@@ -82,7 +82,7 @@ export default function Layout() {
           Ask AI
         </Typography>
 
-        <ChatInput />
+        <SearchBar />
       </Box>
 
       <Box
