@@ -83,8 +83,8 @@ export default function JobCardSearchBar() {
       const errorMsg =
         err?.response?.data?.error || "Something went wrong. Please try again.";
       showErrorToast(errorMsg);
+      setError({ status: 404, message: "Something went wrong. Please try again." });
     } finally {
-      // setLoading(false);
       setIsLoading(false);
     }
   };

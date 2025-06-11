@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <Router>
-       {/* Global toast container */}
+      {/* Global toast container */}
       <ToastContainer />
 
       <Navbar />

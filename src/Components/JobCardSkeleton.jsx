@@ -49,12 +49,11 @@ const MotionSkeleton = ({ variant, sx, ...props }) => (
     <Skeleton
       variant={variant}
       animation={false} // MUI ka animation band karke apna use karenge
-      sx={{ ...sx, ...shimmerStyle, bgcolor: 'rgba(0, 0, 0, 0.08)' }}
+      sx={{ ...sx, ...shimmerStyle, bgcolor: "rgba(0, 0, 0, 0.08)" }}
       {...props}
     />
   </motion.div>
 );
-
 
 const JobCardSkeleton = () => {
   return (
@@ -76,7 +75,7 @@ const JobCardSkeleton = () => {
           #D2E8FF -10px 0px 0px 0px inset,
           #D2E8FF 0px -70px 0px 0px inset
         `,
-        overflow: 'hidden' // Important for shimmer to not overflow card
+        overflow: "hidden", // Important for shimmer to not overflow card
       }}
     >
       <style>{keyframes}</style>
@@ -93,14 +92,22 @@ const JobCardSkeleton = () => {
           </Stack>
 
           {/* Job Title & Salary */}
-          <MotionSkeleton variant="text" sx={{ fontSize: '1.25rem', mb: 0.5 }} />
+          <MotionSkeleton
+            variant="text"
+            sx={{ fontSize: "1.25rem", mb: 0.5 }}
+          />
           <MotionSkeleton variant="text" width="60%" sx={{ mb: 1.5 }} />
 
           {/* Job Type Chip */}
-          <MotionSkeleton variant="rounded" width={80} height={24} sx={{ mb: 2, borderRadius: 2 }} />
+          <MotionSkeleton
+            variant="rounded"
+            width={80}
+            height={24}
+            sx={{ mb: 2, borderRadius: 2 }}
+          />
 
           {/* Job Description */}
-          <Box sx={{mb: 1.5}}>
+          <Box sx={{ mb: 1.5 }}>
             <MotionSkeleton variant="text" width="70%" sx={{ mb: 0.5 }} />
             <MotionSkeleton variant="text" />
             <MotionSkeleton variant="text" width="80%" />
@@ -109,29 +116,43 @@ const JobCardSkeleton = () => {
           {/* Skills */}
           <MotionSkeleton variant="text" width="40%" sx={{ mb: 1 }} />
           <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 2 }}>
-            <MotionSkeleton variant="rounded" width={60} height={22} sx={{ borderRadius: 3 }} />
-            <MotionSkeleton variant="rounded" width={75} height={22} sx={{ borderRadius: 3 }} />
-            <MotionSkeleton variant="rounded" width={50} height={22} sx={{ borderRadius: 3 }} />
-          </Stack>
-          
-          {/* Education & Location */}
-          <Stack direction="column" spacing={2} justifyContent="space-between">
-              <Stack direction="row" alignItems="flex-start" gap={1}>
-                  <MotionSkeleton variant="circular" width={20} height={20} />
-                  <Box sx={{ flex: 1 }}>
-                      <MotionSkeleton variant="text" width="50%" />
-                      <MotionSkeleton variant="text" width="80%" />
-                  </Box>
-              </Stack>
-               <Stack direction="row" alignItems="flex-start" gap={1}>
-                  <MotionSkeleton variant="circular" width={20} height={20} />
-                  <Box sx={{ flex: 1 }}>
-                      <MotionSkeleton variant="text" width="50%" />
-                      <MotionSkeleton variant="text" width="80%" />
-                  </Box>
-              </Stack>
+            <MotionSkeleton
+              variant="rounded"
+              width={60}
+              height={22}
+              sx={{ borderRadius: 3 }}
+            />
+            <MotionSkeleton
+              variant="rounded"
+              width={75}
+              height={22}
+              sx={{ borderRadius: 3 }}
+            />
+            <MotionSkeleton
+              variant="rounded"
+              width={50}
+              height={22}
+              sx={{ borderRadius: 3 }}
+            />
           </Stack>
 
+          {/* Education & Location */}
+          <Stack direction="column" spacing={2} justifyContent="space-between">
+            <Stack direction="row" alignItems="flex-start" gap={1}>
+              <MotionSkeleton variant="circular" width={20} height={20} />
+              <Box sx={{ flex: 1 }}>
+                <MotionSkeleton variant="text" width="50%" />
+                <MotionSkeleton variant="text" width="80%" />
+              </Box>
+            </Stack>
+            <Stack direction="row" alignItems="flex-start" gap={1}>
+              <MotionSkeleton variant="circular" width={20} height={20} />
+              <Box sx={{ flex: 1 }}>
+                <MotionSkeleton variant="text" width="50%" />
+                <MotionSkeleton variant="text" width="80%" />
+              </Box>
+            </Stack>
+          </Stack>
         </CardContent>
 
         {/* View Jobs Button */}
@@ -143,7 +164,11 @@ const JobCardSkeleton = () => {
             right: 16,
           }}
         >
-          <MotionSkeleton variant="rectangular" height={38} sx={{ borderRadius: 5, py: 0.5, px: 0.5, }} />
+          <MotionSkeleton
+            variant="rectangular"
+            height={38}
+            sx={{ borderRadius: 5, py: 0.5, px: 0.5 }}
+          />
         </Box>
       </motion.div>
     </Card>

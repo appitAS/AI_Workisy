@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -6,7 +5,7 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import ModelDropdown from "./ModelDropdown";
 import SearchBar from "./SearchBar";
 import UploadButton from "./UploadButton";
-import ChatInput from "./ChatInput";
+
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",

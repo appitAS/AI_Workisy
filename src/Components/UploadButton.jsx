@@ -4,11 +4,11 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import axios from "axios";
 import { showErrorToast } from "./ToastNotifier"; // import toasts
 import useJobStore from "../store/jobStore";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import endpoints from "../utils/endPoint";
 
 export default function UploadButton() {
-  const { onselectedModel, setJobs, setPrompt, setIsLoading, isLoading } =
+  const { onselectedModel, setJobs, setPrompt, setIsLoading, isLoading,setError } =
     useJobStore();
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ export default function UploadButton() {
     setIsLoading(true);
 
     const formData = new FormData();
-    formData.append("model", "sonar");
+    formData.append("model", onselectedModel.name);
     formData.append("resume", file);
     formData.append("userId", sessionStorage.getItem("job_session_id") || null);
     if (location.pathname !== "/jobs") {
@@ -50,13 +50,14 @@ export default function UploadButton() {
         // showSuccessToast("Jobs fetched successfully!");
         setJobs(jobs);
         setPrompt(response?.data?.data?.prompt || "");
-        sessionStorage.setItem('job_session_id', response?.data?.data?.userId) // Set the prompt from response
+        sessionStorage.setItem("job_session_id", response?.data?.data?.userId); // Set the prompt from response
       } else {
         showErrorToast("No jobs found in your resume.");
+        setError({ status: 404, message: "No jobs found in your resume." });
       }
     } catch (error) {
-      console.error("Upload failed:", error);
       showErrorToast("Failed to upload resume. Try again.");
+      setError({ status: 404, message: "Failed to upload resume. Try again." });
     } finally {
       setIsLoading(false);
     }

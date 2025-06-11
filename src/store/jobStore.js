@@ -6,7 +6,6 @@ const useJobStore = create((set) => ({
   error: null,
   setError: (error) => set({ error }),
 
-  
   setIsLoading: (loading) => set({ isLoading: loading }),
   setJobs: (jobs) => set({ jobs }),
   prompt: "",

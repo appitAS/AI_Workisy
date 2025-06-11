@@ -7,7 +7,7 @@ const API_BASE_URL = 'https://aiworkisyapi.workisy.com/api'
 const endpoints = {
     getJobsFromConversion: {
         url: `${API_BASE_URL}/jobs`,
-        method: 'GET',
+        method: 'POST',
     },
     getJobFromResume: {
         url: `${API_BASE_URL}/jobs_from_resume`,
