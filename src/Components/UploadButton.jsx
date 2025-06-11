@@ -5,6 +5,7 @@ import axios from "axios";
 import { showErrorToast } from "./ToastNotifier"; // import toasts
 import useJobStore from "../store/jobStore";
 import { useNavigate, useLocation } from "react-router-dom";
+import endpoints from "../utils/endPoint";
 
 export default function UploadButton() {
   const { onselectedModel, setJobs, setPrompt, setIsLoading, isLoading } =
@@ -27,13 +28,14 @@ export default function UploadButton() {
     const formData = new FormData();
     formData.append("model", "sonar");
     formData.append("resume", file);
+    formData.append("userId", sessionStorage.getItem("job_session_id") || null);
     if (location.pathname !== "/jobs") {
       navigate("/jobs");
     }
 
     try {
       const response = await axios.post(
-        "https://workisybackendnodejs.onrender.com/api/jobs_from_resume",
+        endpoints.getJobFromResume.url,
         formData,
         {
           headers: {
@@ -47,7 +49,8 @@ export default function UploadButton() {
       if (jobs && jobs.length > 0) {
         // showSuccessToast("Jobs fetched successfully!");
         setJobs(jobs);
-        setPrompt(response?.data?.data?.prompt || ""); // Set the prompt from response
+        setPrompt(response?.data?.data?.prompt || "");
+        sessionStorage.setItem('job_session_id', response?.data?.data?.userId) // Set the prompt from response
       } else {
         showErrorToast("No jobs found in your resume.");
       }

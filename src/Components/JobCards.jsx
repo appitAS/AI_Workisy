@@ -15,6 +15,8 @@ import JobCardSearchBar from "./JobCardSercBar";
 import useJobStore from "../store/jobStore";
 import BackButton from "./BackButton";
 import JobCardSkeleton from "./JobCardSkeleton";
+import NotFound from "./NotFound";
+import { useEffect } from "react";
 
 // Microsoft Logo SVG
 const CompanyLogoOrAvatar = ({ logo, company }) => (
@@ -42,7 +44,7 @@ const CompanyLogoOrAvatar = ({ logo, company }) => (
 );
 
 const JobCard = () => {
-  const { jobs, isLoading, prompt } = useJobStore();
+  const { jobs, isLoading, prompt, error } = useJobStore();
 
   return (
     <Box
@@ -57,25 +59,28 @@ const JobCard = () => {
       {/* Top message */}
       <BackButton />
 
-      <Box sx={{ px: { xs: 2, sm: 33 }, pt: 4 }}>
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            fontWeight: 500,
-            color: "black",
-            fontSize: "18px",
-            gap: "8px",
-          }}
-        >
-          <AutoAwesomeIcon
-            sx={{ marginBottom: "1rem", color: "#7b2ff2", fontSize: 18 }}
-          />
-          Based on your search : {prompt} {" "}
-          results are present
-        </Typography>
-      </Box>
+      {!isLoading && !!prompt && (
+        <Box sx={{ px: { xs: 2, sm: 33 }, pt: 4 }}>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "start",
+              justifyContent: "center",
+              fontWeight: 500,
+              color: "black",
+              fontSize: "18px",
+              gap: "8px",
+            }}
+          >
+            <AutoAwesomeIcon
+              sx={{ marginBottom: "1rem", color: "#7b2ff2", fontSize: 18 }}
+            />
+            Based on your search : {prompt} ,here’s a concise overview of the current job landscape
+          </Typography>
+        </Box>
+      )}
+
+      {!isLoading && !!error && <NotFound />}
 
       {/* Cards Grid */}
       <Box sx={{ p: { xs: 2, sm: 4 }, mt: 0.5 }}>

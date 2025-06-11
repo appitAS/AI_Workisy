@@ -3,8 +3,7 @@
  * Define your API endpoints and HTTP methods here.
  */
 
-const API_BASE_URL = 'https://workisybackendnodejs.onrender.com/api';
-
+const API_BASE_URL = 'https://aiworkisyapi.workisy.com/api'
 const endpoints = {
     getJobsFromConversion: {
         url: `${API_BASE_URL}/jobs`,

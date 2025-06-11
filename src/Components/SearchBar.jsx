@@ -3,13 +3,11 @@ import { Box, TextField } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { styled } from "@mui/material/styles";
 import Loader from "./Loader";
-import {
-  showErrorToast,
-  showNoJobsToast,
-} from "./ToastNotifier";
+import { showErrorToast, showNoJobsToast } from "./ToastNotifier";
 import axios from "axios";
 import useJobStore from "../store/jobStore";
 import { useNavigate, useLocation } from "react-router-dom";
+import endpoints from "../utils/endPoint";
 
 const ArrowButtonWrapper = styled("div")({
   position: "absolute",
@@ -33,8 +31,15 @@ const ArrowButtonWrapper = styled("div")({
 
 export default function JobCardSearchBar() {
   const [searchText, setSearchText] = useState("");
-  const { onselectedModel, setJobs, setIsLoading, isLoading, setPrompt } = useJobStore()
-  
+  const {
+    onselectedModel,
+    setJobs,
+    setIsLoading,
+    isLoading,
+    setPrompt,
+    setError,
+  } = useJobStore();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,8 +48,8 @@ export default function JobCardSearchBar() {
 
     // setLoading(true);
     setIsLoading(true);
-     setJobs([]);
-     setPrompt("");
+    setJobs([]);
+    setPrompt("");
 
     if (location.pathname !== "/jobs") {
       navigate("/jobs");
@@ -53,14 +58,11 @@ export default function JobCardSearchBar() {
     try {
       const storedUserId = sessionStorage.getItem("job_session_id");
 
-      const response = await axios.post(
-        "https://workisybackendnodejs.onrender.com/api/jobs",
-        {
-          model: onselectedModel.name,
-          message: searchText,
-          userId: storedUserId || null,
-        }
-      );
+      const response = await axios.post(endpoints.getJobsFromConversion.url, {
+        model: onselectedModel.name,
+        message: searchText,
+        userId: storedUserId || null,
+      });
 
       const { userId: newUserId, jobs } = response.data?.data || {};
 
@@ -70,11 +72,12 @@ export default function JobCardSearchBar() {
       setPrompt(searchText);
       if (Array.isArray(jobs) && jobs.length > 0) {
         setJobs(jobs);
-   
+
         // showSuccessToast("Jobs fetched successfully.");
       } else {
         setJobs([]);
         showNoJobsToast("No jobs found. Try another keyword.");
+        setError({ status: 404, message: "No jobs found." });
       }
     } catch (err) {
       const errorMsg =

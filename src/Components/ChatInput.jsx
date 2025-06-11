@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   TextField,
   Button,
@@ -18,7 +18,9 @@ import useJobStore from "../store/jobStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import axios from "axios";
-import StopRoundedIcon from '@mui/icons-material/StopRounded';
+import StopRoundedIcon from "@mui/icons-material/StopRounded";
+import endpoints from "../utils/endPoint";
+import { showNoJobsToast } from "./ToastNotifier";
 const SearchContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -50,19 +52,6 @@ const SearchInput = styled(TextField)({
   },
 });
 
-const ModelSelect = styled(Select)(({ theme }) => ({
-  minWidth: "160px",
-  marginRight: "8px",
-  "& .MuiSelect-select": {
-    padding: "10px 14px",
-    backgroundColor: "#fff",
-    borderRadius: "16px !important",
-  },
-  "& .MuiOutlinedInput-notchedOutline": {
-    border: "none",
-  },
-}));
-
 const ActionButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: "#fff",
   color: "#4c4c4c",
@@ -72,25 +61,54 @@ const ActionButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const LargeActionButton = styled(Button)(({ theme }) => ({
+const allModels = [
+  { label: "SNR", name: "sonar", comment: "Perplexity's fast model" },
+  {
+    label: "SNR-Pro",
+    name: "sonar-pro",
+    comment: "Anthropic's advanced model",
+    badge: "new",
+    badgeColor: "primary",
+  },
+];
+
+const DeepThinkButton = styled(Button)(({ theme }) => ({
   backgroundColor: "#fff",
   color: "#4c4c4c",
-  borderRadius: "16px",
+  borderRadius: "24px",
   padding: "8px 16px",
-  margin: "0 4px",
+  fontSize: "10px",
+  fontWeight: 500,
   textTransform: "none",
+  boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
+  borderColor: "rgba(0, 0, 0, 0.12)",
   "&:hover": {
     backgroundColor: "#E0E4ED",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.16)",
   },
 }));
 
 const ChatInput = () => {
   const [searchText, setSearchText] = useState("");
-  const { onselectedModel, setJobs, setIsLoading, isLoading, setPrompt,setOnselectedModel } =
-    useJobStore();
+  const {
+    onselectedModel,
+    setJobs,
+    setIsLoading,
+    isLoading,
+    setPrompt,
+    setOnselectedModel,
+    setError
+  } = useJobStore();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const handleSelectModel = (modelName) => {
+    console.log("Selected model:", modelName);
+    const selectedModel = allModels.find((model) => model.name === modelName);
+    if (selectedModel) {
+      setOnselectedModel(selectedModel);
+    }
+  };
   const handleSearch = async () => {
     if (!searchText.trim()) return;
 
@@ -104,10 +122,11 @@ const ChatInput = () => {
     }
 
     try {
+      console.log("correct seach")
       const storedUserId = sessionStorage.getItem("job_session_id");
 
       const response = await axios.post(
-        "https://workisybackendnodejs.onrender.com/api/jobs",
+        endpoints.getJobsFromConversion.url,
         {
           model: onselectedModel.name,
           message: searchText,
@@ -117,6 +136,7 @@ const ChatInput = () => {
 
       const { userId: newUserId, jobs } = response.data?.data || {};
 
+      console.log(".......data",   jobs)
       if (newUserId && !storedUserId) {
         sessionStorage.setItem("job_session_id", newUserId);
       }
@@ -128,6 +148,7 @@ const ChatInput = () => {
       } else {
         setJobs([]);
         showNoJobsToast("No jobs found. Try another keyword.");
+        setError({status: 404, message: "No jobs found."});
       }
     } catch (err) {
       const errorMsg =
@@ -140,6 +161,56 @@ const ChatInput = () => {
     }
   };
 
+  //for the attachmment
+  const fileInputRef = useRef(null);
+  const [fileName, setFileName] = useState("");
+
+  const handleFileChange = async (e) => {
+    setJobs([]); // Clear previous jobs
+    setPrompt(""); // Clear previous prompt
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFileName(file.name);
+    setIsLoading(true);
+
+    const formData = new FormData();
+    formData.append("model", "sonar");
+    formData.append("resume", file);
+    if (location.pathname !== "/jobs") {
+      navigate("/jobs");
+    }
+
+    try {
+      const response = await axios.post(
+        endpoints.getJobFromResume.url,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const jobs = response?.data?.data?.jobs;
+      consolelog("Response data:", jobs);
+      if (jobs && jobs.length > 0) {
+        // showSuccessToast("Jobs fetched successfully!");
+        setJobs(jobs);
+        setPrompt(response?.data?.data?.prompt || ""); // Set the prompt from response
+      } else {
+        showErrorToast("No jobs found in your resume.");
+        setError({status: 404, message: "No jobs found in your resume."});
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      showErrorToast("Failed to upload resume. Try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const handleEnter = (e) => {
       if (e.key === "Enter") handleSearch();
@@ -147,8 +218,6 @@ const ChatInput = () => {
     window.addEventListener("keydown", handleEnter);
     return () => window.removeEventListener("keydown", handleEnter);
   }, [searchText, onselectedModel]);
-
-  const [model, setModel] = React.useState("sonar");
 
   return (
     <SearchContainer
@@ -177,7 +246,7 @@ const ChatInput = () => {
         variant="outlined"
         fullWidth
         style={{
-          height: "250px", // Taller input like DeepSeek
+          height: "200px", // Taller input like DeepSeek
         }}
       />
 
@@ -193,19 +262,31 @@ const ChatInput = () => {
           justifyContent: "space-between",
         }}
       >
-        <ModelSelect
-          value={model}
-          onChange={(e) => {
-            cosolel.log(e.target.value);
-            setModel(e.target.value)}}
-          variant="outlined"
+        <Box
           style={{
-            fontSize: "16px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            fontSize: "7px",
           }}
         >
-          <MenuItem value="sonar">sonar</MenuItem>
-          <MenuItem value="sonar-pro">sonar pro</MenuItem>
-        </ModelSelect>
+          {allModels.map((model) => (
+            <DeepThinkButton
+              key={model.name}
+              onClick={() => handleSelectModel(model.name)}
+              style={{
+                backgroundColor:
+                  onselectedModel.name === model.name ? "#D2E8FF" : "#fff",
+                color: onselectedModel.name === model.name ? "#000" : "#4c4c4c",
+                fontSize: "10px",
+                fontWeight: 500,
+              }}
+            >
+              {model.label}
+            </DeepThinkButton>
+          ))}
+        </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -217,9 +298,17 @@ const ChatInput = () => {
         >
           Search
         </LargeActionButton> */}
-          {/* <ActionButton>
+         <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".pdf,.doc,.docx"
+              style={{ display: "none" }}
+            />
+          <ActionButton  onClick={() => fileInputRef.current.click()}>
+           
             <AttachFileIcon />
-          </ActionButton> */}
+          </ActionButton>
           <ActionButton
             disabled={!searchText}
             onClick={handleSearch}
@@ -230,8 +319,7 @@ const ChatInput = () => {
               cursor: !searchText ? "not-allowed" : "pointer",
             }}
           >
-            {isLoading ? <StopRoundedIcon /> : <ArrowUpwardIcon /> }
-         
+            {isLoading ? <StopRoundedIcon /> : <ArrowUpwardIcon />}
           </ActionButton>
         </Box>
       </div>

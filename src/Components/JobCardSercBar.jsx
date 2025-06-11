@@ -5,6 +5,7 @@ import axios from "axios";
 import useJobStore from "../store/jobStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import ChatInput from "./ChatInput";
+import endpoints from "../utils/endPoint";
 
 const ArrowButtonWrapper = styled("div")({
   position: "absolute",
@@ -28,7 +29,7 @@ const ArrowButtonWrapper = styled("div")({
 
 export default function JobCardSearchBar() {
   const [searchText, setSearchText] = useState("");
-  const { onselectedModel, setJobs, setIsLoading, isLoading } = useJobStore();
+  const { onselectedModel, setJobs, setIsLoading, isLoading, setError } = useJobStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,6 +38,7 @@ export default function JobCardSearchBar() {
 
     setIsLoading(true);
     setJobs([]);
+    setError(null); // Reset error state
 
     if (location.pathname !== "/jobs") {
       navigate("/jobs");
@@ -46,7 +48,7 @@ export default function JobCardSearchBar() {
       const storedUserId = sessionStorage.getItem("job_session_id");
 
       const response = await axios.post(
-        "https://workisybackendnodejs.onrender.com/api/jobs",
+        endpoints.getJobsFromConversion.url,
         {
           model: onselectedModel.name,
           message: searchText,
@@ -60,17 +62,20 @@ export default function JobCardSearchBar() {
         sessionStorage.setItem("job_session_id", newUserId);
       }
 
+      console.log("Response data:", jobs);
       if (Array.isArray(jobs) && jobs.length > 0) {
         setJobs(jobs);
         // showSuccessToast("Jobs fetched successfully.");
       } else {
         setJobs([]);
+        setError({status: 404, message: "No jobs found."});
         showNoJobsToast("No jobs found. Try another keyword.");
       }
     } catch (err) {
       const errorMsg =
         err?.response?.data?.error || "Something went wrong. Please try again.";
       showErrorToast(errorMsg);
+      setError(err)
     } finally {
       setIsLoading(false);
       setSearchText(""); // Clear search text after search
