@@ -33,16 +33,18 @@ const ArrowButtonWrapper = styled("div")({
 
 export default function JobCardSearchBar() {
   const [searchText, setSearchText] = useState("");
-  const { onselectedModel, setJobs } = useJobStore();
-  const [loading, setLoading] = useState(false);
+  const { onselectedModel, setJobs, setIsLoading, isLoading, setPrompt } = useJobStore()
+  
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleSearch = async () => {
     if (!searchText.trim()) return;
 
-    setLoading(true);
+    // setLoading(true);
+    setIsLoading(true);
      setJobs([]);
+     setPrompt("");
 
     if (location.pathname !== "/jobs") {
       navigate("/jobs");
@@ -65,9 +67,10 @@ export default function JobCardSearchBar() {
       if (newUserId && !storedUserId) {
         sessionStorage.setItem("job_session_id", newUserId);
       }
-
+      setPrompt(searchText);
       if (Array.isArray(jobs) && jobs.length > 0) {
         setJobs(jobs);
+   
         // showSuccessToast("Jobs fetched successfully.");
       } else {
         setJobs([]);
@@ -78,7 +81,8 @@ export default function JobCardSearchBar() {
         err?.response?.data?.error || "Something went wrong. Please try again.";
       showErrorToast(errorMsg);
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -124,7 +128,7 @@ export default function JobCardSearchBar() {
       />
 
       <ArrowButtonWrapper onClick={handleSearch} aria-label="search button">
-        {loading && <Loader />}
+        {isLoading && <Loader />}
         <ArrowUpwardIcon sx={{ color: "#fff", fontSize: 28, zIndex: 1 }} />
       </ArrowButtonWrapper>
     </Box>

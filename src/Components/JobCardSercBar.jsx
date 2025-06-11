@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField } from "@mui/material";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { styled } from "@mui/material/styles";
-import Loader from "./Loader";
-import {
-  showErrorToast,
-  showNoJobsToast,
-} from "./ToastNotifier";
+import { showErrorToast, showNoJobsToast } from "./ToastNotifier";
 import axios from "axios";
 import useJobStore from "../store/jobStore";
 import { useNavigate, useLocation } from "react-router-dom";
+import ChatInput from "./ChatInput";
 
 const ArrowButtonWrapper = styled("div")({
   position: "absolute",
@@ -33,15 +28,14 @@ const ArrowButtonWrapper = styled("div")({
 
 export default function JobCardSearchBar() {
   const [searchText, setSearchText] = useState("");
-  const { onselectedModel, setJobs } = useJobStore();
-  const [loading, setLoading] = useState(false);
+  const { onselectedModel, setJobs, setIsLoading, isLoading } = useJobStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleSearch = async () => {
     if (!searchText.trim()) return;
 
-    setLoading(true);
+    setIsLoading(true);
     setJobs([]);
 
     if (location.pathname !== "/jobs") {
@@ -78,7 +72,8 @@ export default function JobCardSearchBar() {
         err?.response?.data?.error || "Something went wrong. Please try again.";
       showErrorToast(errorMsg);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
+      setSearchText(""); // Clear search text after search
     }
   };
 
@@ -90,43 +85,5 @@ export default function JobCardSearchBar() {
     return () => window.removeEventListener("keydown", handleEnter);
   }, [searchText, onselectedModel]);
 
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        borderRadius: 1,
-        boxShadow: "0 2px 12px 0 rgba(123,47,242,0.07)",
-        background: "#fff",
-        border: "3px solid #D2E8FF",
-        px: 2,
-        display: "flex",
-        alignItems: "center",
-        minHeight: 70,
-        maxWidth: 1500,
-      }}
-    >
-      <TextField
-        fullWidth
-        variant="standard"
-        placeholder="Looking Java Jobs in Delhi 7 years Experience 10 LPA"
-        InputProps={{
-          disableUnderline: true,
-          sx: {
-            fontSize: 17,
-            color: "#222",
-            pl: 2,
-            pr: 7,
-          },
-        }}
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        sx={{ flex: 1, background: "transparent" }}
-      />
-
-      <ArrowButtonWrapper onClick={handleSearch} aria-label="search button">
-        {loading && <Loader />}
-        <ArrowUpwardIcon sx={{ color: "#fff", fontSize: 28, zIndex: 1 }} />
-      </ArrowButtonWrapper>
-    </Box>
-  );
+  return <ChatInput />;
 }

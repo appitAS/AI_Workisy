@@ -6,6 +6,7 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import ModelDropdown from "./ModelDropdown";
 import SearchBar from "./SearchBar";
 import UploadButton from "./UploadButton";
+import ChatInput from "./ChatInput";
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
@@ -81,7 +82,7 @@ export default function Layout() {
           Ask AI
         </Typography>
 
-        <SearchBar/>
+        <ChatInput />
       </Box>
 
       <Box
@@ -125,7 +126,7 @@ export default function Layout() {
         </Typography>
       </Divider>
 
-      {/* <UploadButton setJobs={setJobs}/> */}
+      <UploadButton />
 
       <Box
         sx={{

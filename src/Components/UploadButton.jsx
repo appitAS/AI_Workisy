@@ -2,27 +2,38 @@ import React, { useRef, useState } from "react";
 import { Box, Button, CircularProgress } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import axios from "axios";
-import {  showErrorToast } from "./ToastNotifier"; // import toasts
+import { showErrorToast } from "./ToastNotifier"; // import toasts
+import useJobStore from "../store/jobStore";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function UploadButton({ setJobs }) {
+export default function UploadButton() {
+  const { onselectedModel, setJobs, setPrompt, setIsLoading, isLoading } =
+    useJobStore();
+  const navigate = useNavigate();
+
   const fileInputRef = useRef(null);
-  const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState("");
 
   const handleFileChange = async (e) => {
+    setJobs([]); // Clear previous jobs
+    setPrompt(""); // Clear previous prompt
+
     const file = e.target.files[0];
     if (!file) return;
 
     setFileName(file.name);
-    setLoading(true);
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("model", "sonar");
-    formData.append("file", file);
+    formData.append("resume", file);
+    if (location.pathname !== "/jobs") {
+      navigate("/jobs");
+    }
 
     try {
       const response = await axios.post(
-        "https://workisybackendnodejs.onrender.com/api/jobs",
+        "https://workisybackendnodejs.onrender.com/api/jobs_from_resume",
         formData,
         {
           headers: {
@@ -31,11 +42,12 @@ export default function UploadButton({ setJobs }) {
         }
       );
 
-      const jobs = response.data.jobs;
-      console.log("resume respone=>>",jobs)
+      const jobs = response?.data?.data?.jobs;
+
       if (jobs && jobs.length > 0) {
         // showSuccessToast("Jobs fetched successfully!");
         setJobs(jobs);
+        setPrompt(response?.data?.data?.prompt || ""); // Set the prompt from response
       } else {
         showErrorToast("No jobs found in your resume.");
       }
@@ -43,7 +55,7 @@ export default function UploadButton({ setJobs }) {
       console.error("Upload failed:", error);
       showErrorToast("Failed to upload resume. Try again.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -68,14 +80,14 @@ export default function UploadButton({ setJobs }) {
       <Button
         variant="outlined"
         startIcon={
-          loading ? (
+          isLoading ? (
             <CircularProgress size={16} color="inherit" />
           ) : (
             <CloudUploadOutlinedIcon sx={{ color: "#7b2ff2", fontSize: 22 }} />
           )
         }
         onClick={() => fileInputRef.current.click()}
-        disabled={loading}
+        disabled={isLoading}
         sx={{
           mt: 2,
           borderRadius: "30px",

@@ -2,7 +2,11 @@ import { create } from "zustand";
 
 const useJobStore = create((set) => ({
   jobs: [],
+  isLoading: false,
+  setIsLoading: (loading) => set({ isLoading: loading }),
   setJobs: (jobs) => set({ jobs }),
+  prompt: "",
+  setPrompt: (prompt) => set({ prompt }),
   onselectedModel: { name: "sonar" },
   setOnselectedModel: (model) => set({ onselectedModel: model }),
 }));
