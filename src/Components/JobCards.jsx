@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -8,6 +9,7 @@ import {
   Button,
   Avatar,
 } from "@mui/material";
+import Cookies from "js-cookie";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SchoolIcon from "@mui/icons-material/School";
@@ -45,12 +47,25 @@ const JobCard = () => {
   const { jobs, isLoading, prompt, error } = useJobStore();
 
   const getValidUrl = (url) => {
-  if (!url) return "#";
-  return url.startsWith("http://") || url.startsWith("https://")
-    ? url
-    : `https://${url}`;
-};
+    if (!url) return "#";
+    return url.startsWith("http://") || url.startsWith("https://")
+      ? url
+      : `https://${url}`;
+  };
 
+  const navigate = useNavigate();
+
+  const isUserLoggedIn = () => {
+    return !!Cookies.get("user_data");
+  };
+
+  const handleViewJob = (jobUrl) => {
+    if (isUserLoggedIn()) {
+      window.open(getValidUrl(jobUrl), "_blank");
+    } else {
+      navigate("/signup", { state: { jobUrl: getValidUrl(jobUrl) } });
+    }
+  };
 
   return (
     <>
@@ -86,7 +101,7 @@ const JobCard = () => {
                   sx={{ marginBottom: "1rem", color: "#7b2ff2", fontSize: 18 }}
                 />
                 Based on your search : {prompt} ,here’s a concise overview of
-                the current job landscape
+                the current job landscape
               </Typography>
             </Box>
           )}
@@ -289,8 +304,7 @@ const JobCard = () => {
                         }}
                       >
                         <Button
-                         href={getValidUrl(job.job_url)}
-                          target="_blank"
+                          onClick={() => handleViewJob(job.job_url)}
                           variant="contained"
                           fullWidth
                           sx={{
@@ -316,7 +330,7 @@ const JobCard = () => {
           </Box>
         </Box>
       )}
-      
+
       {/* Search Bar Fixed Bottom */}
       <Box
         sx={{

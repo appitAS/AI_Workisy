@@ -4,6 +4,7 @@ import Navbar from "./Components/Navbar";
 import Layout from "./Components/Layout";
 import JobCards from "./Components/JobCards";
 import { ToastContainer } from "react-toastify";
+import MainPage from "./Components/AuthMainPage";
 function App() {
   return (
     <Router>
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />} />
         <Route path="/jobs" element={<JobCards />} />
+        <Route path="/signup" element={<MainPage />} />
       </Routes>
     </Router>
   );

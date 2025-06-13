@@ -1,9 +1,38 @@
-*{
-    font-family: 'Urbanist', sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  font-family: "Urbanist", sans-serif !important;
+  box-sizing: border-box !important;
 }
 
-body{
-    margin: 0;
-    padding: 0;
-     overflow-x: hidden
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.otpinputcontainer {
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.otpinput {
+  height: 40px;
+  padding: 12px;
+  background: "#DFF0FF";
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #b3bac5 !important;
+  position: relative;
+  flex: 1;
+  font-size: 20px;
+  border-radius: 8px;
+  box-shadow: 4px 4px 4px 4px rgba(10, 102, 194, 0.25);
+}
+
+.otpinput::-webkit-outer-spin-button,
+.otpinput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
