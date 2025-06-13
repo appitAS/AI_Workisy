@@ -44,6 +44,14 @@ const CompanyLogoOrAvatar = ({ logo, company }) => (
 const JobCard = () => {
   const { jobs, isLoading, prompt, error } = useJobStore();
 
+  const getValidUrl = (url) => {
+  if (!url) return "#";
+  return url.startsWith("http://") || url.startsWith("https://")
+    ? url
+    : `https://${url}`;
+};
+
+
   return (
     <>
       {!isLoading && error ? (
@@ -281,7 +289,7 @@ const JobCard = () => {
                         }}
                       >
                         <Button
-                          href={job.job_url}
+                         href={getValidUrl(job.job_url)}
                           target="_blank"
                           variant="contained"
                           fullWidth
