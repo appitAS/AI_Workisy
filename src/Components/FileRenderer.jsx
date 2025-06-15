@@ -18,7 +18,7 @@ const FileRenderer = ({ file }) => {
   //   }
   // }, [file]);
   const fileExtension = file.split(".").pop().toLowerCase();
-  const filePath = encodeURI(`${import.meta.env.VITE_FILE_APP}/${file}`);
+  const filePath = encodeURI(`${import.meta.env.VITE_API_BASE_URL}/${file}`);
   console.log(filePath, fileExtension, "lkkllk");
   if (!file) return null;
 
