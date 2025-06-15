@@ -1,42 +1,32 @@
-// import { useEffect, useState } from "react";
-import DocViewer from "./DocViewer";
-import PdfViewer from "./PdfViewer";
-
 const FileRenderer = ({ file }) => {
-  // const [fileUrl, setFileUrl] = useState("");
-  // const [fileExtension, setFileExtension] = useState("");
-
-  // useEffect(() => {
-  //   if (file) {
-  //     const url = URL.createObjectURL(file);
-  //     const extension = file.name.split(".").pop().toLowerCase();
-
-  //     setFileUrl(url);
-  //     setFileExtension(extension);
-
-  //     return () => URL.revokeObjectURL(url);
-  //   }
-  // }, [file]);
   const fileExtension = file.split(".").pop().toLowerCase();
-  const filePath = encodeURI(`${import.meta.env.VITE_API_BASE_URL}/${file}`);
-  console.log(filePath, fileExtension, "lkkllk");
+  const filePath = `${import.meta.env.VITE_API_BASE_URL}/${file}`;
+
+  console.log(filePath, fileExtension, file, "filePath,ext,file");
+
+  const googleViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(
+    filePath
+  )}&embedded=true`;
+
   if (!file) return null;
 
-  if (fileExtension === "pdf") {
-    return <PdfViewer fileUrl={filePath} />;
-  } else if (fileExtension === "doc" || fileExtension === "docx") {
-    return <DocViewer fileUrl={filePath} />;
-  } else if (["png", "jpg", "jpeg", "gif", "webp"].includes(fileExtension)) {
+  if (
+    fileExtension === "pdf" ||
+    fileExtension === "doc" ||
+    fileExtension === "docx"
+  ) {
     return (
-      <img
-        src={filePath}
-        alt="Image Preview"
-        style={{ width: "100%", maxHeight: "800px", objectFit: "contain" }}
-      />
+      <iframe
+        src={googleViewerUrl}
+        width="100%"
+        height="100%"
+        style={{ border: "none" }}
+        title="Google Docs PDF Viewer"
+      >
+        This browser does not support PDFs. Please download the PDF to view it:
+      </iframe>
     );
-  } else {
-    return <div>Unsupported file type</div>;
-  }
+  } else return <div>Unsupported file type</div>;
 };
 
 export default FileRenderer;

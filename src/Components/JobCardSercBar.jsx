@@ -132,7 +132,6 @@ const ChatInput = () => {
     handleMenuClose();
   };
 
-  console.log(jobs);
   const handleSearch = async () => {
     if (isLoading) {
       // Cancel current request and restore jobs

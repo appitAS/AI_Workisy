@@ -27,8 +27,6 @@ export default function SocialLoginCard() {
 
   const { resumeFile } = useJobStore();
 
-  console.log(resumeFile);
-
   const [state, setState] = useState({ name: "", email: "" });
   const [otp, setOtp] = useState({ otp: "", status: false });
   const [isResendOOtpClickable, setIsResendOOtpClickable] = useState(false);
@@ -167,26 +165,29 @@ export default function SocialLoginCard() {
   };
 
   const handleSocialLogin = (provider) => {
-    window.location.href = `http://localhost:3000/api/auth/${provider}?redirectUrl=${encodeURIComponent(
-      location?.state?.job?.job_url
-    )}`;
+    if (resumeFile)
+      window.location.href = `http://localhost:3000/api/auth/${provider}?redirectUrl=${encodeURIComponent(
+        location?.state?.job?.job_url
+      )}&filePath=${resumeFile}`;
+    else showErrorToast("Please upload your resume");
   };
 
   const onSubmit = () => {
     if (otp.status === false) sendOTP();
-    else verifyOTP();
+    else {
+      if (resumeFile) verifyOTP();
+      else showErrorToast("Please upload your resume");
+    }
   };
 
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  console.log(location);
-
   return (
     <Card
       sx={{
-        width: "586px",
+        // width: "586px",
         padding: "30px 90px 18px 90px !important",
         borderRadius: "24px",
         background: "#FFF",
@@ -282,6 +283,7 @@ export default function SocialLoginCard() {
                 fullWidth
                 sx={{
                   border: "none",
+                  pointerEvents: "none",
                 }}
                 onClick={() => handleSocialLogin("linkedin")}
               >
@@ -292,6 +294,7 @@ export default function SocialLoginCard() {
                 fullWidth
                 sx={{
                   border: "none",
+                  pointerEvents: "none",
                 }}
                 onClick={() => handleSocialLogin("twitter")}
               >
@@ -302,6 +305,7 @@ export default function SocialLoginCard() {
                 fullWidth
                 sx={{
                   border: "none",
+                  pointerEvents: "none",
                 }}
                 onClick={() => handleSocialLogin("facebook")}
               >

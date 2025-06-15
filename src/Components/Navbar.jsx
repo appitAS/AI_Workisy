@@ -38,8 +38,6 @@ export default function Navbar() {
     : "";
   const auth_token = Cookies.get("auth_token");
 
-  console.log(Cookies.get("user_data"));
-
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -63,12 +61,20 @@ export default function Navbar() {
       elevation={0}
       sx={{
         background: "#FFF",
-        boxShadow: "none",
-        paddingLeft: "50px",
-        paddingRight: "40px",
+        boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+        // paddingLeft: "50px",
+        // paddingRight: "40px",
       }}
     >
-      <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
+      <Toolbar
+        sx={{
+          justifyContent: "space-between",
+          minHeight: 64,
+          paddingLeft: "64px !important",
+          paddingRight: "64px !important",
+          alignItems: "center",
+        }}
+      >
         {/* Logo */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img

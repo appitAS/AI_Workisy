@@ -2,11 +2,8 @@ import { Box, Typography, Chip, Stack, Avatar, Paper } from "@mui/material";
 import GraduateIcon from "../assets/GraduateIcon";
 import LocationIcon from "../assets/LocationIcon";
 import { CompanyLogoOrAvatar } from "../pages/JobCards";
-import { useLocation } from "react-router-dom";
 
-export default function JobCard() {
-  const { state } = useLocation();
-  console.log(state);
+const JobCard = ({ job }) => {
   return (
     <Paper
       elevation={2}
@@ -43,7 +40,7 @@ export default function JobCard() {
                 marginBottom: "18px",
               }}
             >
-              {state?.job?.job_title || "Job Title"}
+              {job?.job_title || "Job Title"}
             </Typography>
             <Typography
               variant="subtitle2"
@@ -56,11 +53,11 @@ export default function JobCard() {
                 marginBottom: "18px",
               }}
             >
-              {`₹ ${state?.job?.salary}`}
+              {`₹ ${job?.salary}`}
             </Typography>
             <Stack direction="row" spacing={1} mb="26px">
               <Chip
-                label={state?.job?.job_type}
+                label={job?.job_type}
                 size="small"
                 sx={{
                   borderRadius: "8p",
@@ -74,7 +71,7 @@ export default function JobCard() {
                 }}
               />
               <Chip
-                label={state?.job?.job_location?.split("/")[0]}
+                label={job?.job_location?.split("/")[0]}
                 size="small"
                 sx={{
                   borderRadius: "8p",
@@ -125,7 +122,7 @@ export default function JobCard() {
                       lineHeight: "120%",
                     }}
                   >
-                    {state?.job?.job_location}
+                    {job?.job_location}
                   </Typography>
                 </Stack>
               </Stack>
@@ -151,15 +148,17 @@ export default function JobCard() {
                       lineHeight: "120%",
                     }}
                   >
-                    {state?.job?.education_qualification || "Not Available"}
+                    {job?.education_qualification || "Not Available"}
                   </Typography>
                 </Stack>
               </Stack>
             </Stack>
           </Box>
-          <CompanyLogoOrAvatar company="Google" />
+          <CompanyLogoOrAvatar company={job?.company_name} />
         </Stack>
       </Stack>
     </Paper>
   );
-}
+};
+
+export default JobCard;
