@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import { Avatar, IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import PowerSettingsNewRoundedIcon from "@mui/icons-material/PowerSettingsNewRounded";
+import useIsMobile from "./useIsMobile";
 
 // Custom Globe SVG Icon as a React component
 function GlobeIcon(props) {
@@ -30,6 +31,7 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -62,16 +64,14 @@ export default function Navbar() {
       sx={{
         background: "#FFF",
         boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-        // paddingLeft: "50px",
-        // paddingRight: "40px",
       }}
     >
       <Toolbar
         sx={{
           justifyContent: "space-between",
           minHeight: 64,
-          paddingLeft: "64px !important",
-          paddingRight: "64px !important",
+          paddingLeft: isMobile ? "16px !important" : "64px !important",
+          paddingRight: isMobile ? "16px !important" : "64px !important",
           alignItems: "center",
         }}
       >

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./Components/Navbar";
 import Layout from "./pages/Layout";
 import JobCards from "./pages/JobCards";
 import { ToastContainer } from "react-toastify";

@@ -13,11 +13,11 @@ import Cookies from "js-cookie";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SchoolIcon from "@mui/icons-material/School";
-import JobCardSearchBar from "../components/JobCardSercBar";
+import JobCardSearchBar from "../Components/JobCardSercBar";
 import useJobStore from "../store/jobStore";
-import BackButton from "../components/BackButton";
-import JobCardSkeleton from "../components/JobCardSkeleton";
-import NotFound from "../components/NotFound";
+import BackButton from "../Components/BackButton";
+import JobCardSkeleton from "../Components/JobCardSkeleton";
+import NotFound from "../Components/NotFound";
 import { useEffect, useRef } from "react";
 
 export const CompanyLogoOrAvatar = ({ logo, company }) => (

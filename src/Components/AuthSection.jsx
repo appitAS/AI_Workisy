@@ -20,40 +20,60 @@ import endpoints from "../utils/endPoint";
 import FacebookIcon from "../assets/FacebookIcon";
 import LinkedInIcon from "../assets/LinkedInIcon";
 import useJobStore from "../store/jobStore";
+import useIsMobile from "./useIsMobile";
+import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-export default function SocialLoginCard() {
+const SocialLoginCard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
-  const { resumeFile } = useJobStore();
+  const { resumeFile, setResumeFile } = useJobStore();
 
   const [state, setState] = useState({ name: "", email: "" });
   const [otp, setOtp] = useState({ otp: "", status: false });
   const [isResendOOtpClickable, setIsResendOOtpClickable] = useState(false);
+  const [isResumeUpload, setIsResumeUpload] = useState({
+    file: null,
+    fileName: "",
+    status: false,
+  });
 
   const timerRef = useRef(0);
   const timerDisplayRef = useRef(null);
   const intervalRef = useRef(null);
+  const fileInputRef = useRef();
 
   const isVerifyOtpDisabled = otp.status && otp.otp.length === 6;
   const isSubmitDisabled = !!state.name && !!state.email;
+  const OAuthButtonStyle = isMobile
+    ? {
+        border: "none",
+        padding: "4px",
+        minWidth: "max-content !important",
+      }
+    : {
+        border: "none",
+      };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const uploadResume = async (user_data) => {
+  const uploadResume = async (selected) => {
     try {
       const formData = new FormData();
-      formData.append("user_id", user_data.id);
-      formData.append("file", resumeFile);
+      formData.append("file", selected);
 
       const response = await axios.post(endpoints.uploadResume.url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       console.log("Resume Uploaded Successfully", response.data);
+      setResumeFile(response.data.filePath);
+      showSuccessToast("Resume Uploaded Successfully");
     } catch (error) {
       console.error(
         "Error uploading resume:",
@@ -116,7 +136,6 @@ export default function SocialLoginCard() {
       else {
         showSuccessToast(data?.message);
         setSession(data);
-        await uploadResume(data.user_data);
         window.open(location?.state?.job?.job_url, "_blank");
 
         navigate("/jobs", { replace: true });
@@ -169,14 +188,35 @@ export default function SocialLoginCard() {
       window.location.href = `http://localhost:3000/api/auth/${provider}?redirectUrl=${encodeURIComponent(
         location?.state?.job?.job_url
       )}&filePath=${resumeFile}`;
-    else showErrorToast("Please upload your resume");
+    else {
+      setIsResumeUpload((prev) => ({ ...prev, status: true }));
+
+      showErrorToast("Please upload your resume");
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const selected = e.target.files[0];
+    if (selected) {
+      if (selected.size < 1024 * 1024) {
+        setIsResumeUpload((prev) => ({
+          ...prev,
+          file: selected,
+          fileName: selected.name,
+        }));
+        await uploadResume(selected);
+      } else showErrorToast("Resume File should be less than 1 MB");
+    }
   };
 
   const onSubmit = () => {
     if (otp.status === false) sendOTP();
     else {
       if (resumeFile) verifyOTP();
-      else showErrorToast("Please upload your resume");
+      else {
+        setIsResumeUpload((prev) => ({ ...prev, status: true }));
+        showErrorToast("Please upload your resume");
+      }
     }
   };
 
@@ -188,10 +228,11 @@ export default function SocialLoginCard() {
     <Card
       sx={{
         // width: "586px",
-        padding: "30px 90px 18px 90px !important",
+        padding: isMobile ? "6px !important" : "30px 90px 18px 90px !important",
         borderRadius: "24px",
         background: "#FFF",
         boxShadow: "0px 0px 3px 3px rgba(0, 0, 0, 0.10)",
+        marginBottom: "32px",
       }}
     >
       <CardContent>
@@ -256,14 +297,73 @@ export default function SocialLoginCard() {
               <Typography> ---------- Or ----------</Typography>
             </Stack>
 
+            {isResumeUpload.status && (
+              <Stack mt={2} mb={2} sx={{ position: "relative" }}>
+                <input
+                  type="file"
+                  hidden
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx"
+                  ref={fileInputRef}
+                />
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  onClick={() => fileInputRef.current.click()}
+                  sx={{
+                    // background: "#DFF0FF",
+                    border: "1px solid #b3bac5",
+                    borderRadius: "8px",
+                    // boxShadow: "4px 4px 4px 4px rgba(10, 102, 194, 0.25)",
+                    padding: "8px 34px 8px 8px",
+                    gap: "8px",
+                  }}
+                >
+                  <AttachFileRoundedIcon
+                    sx={{
+                      borderRight: "2px solid #b3bac5",
+                      paddingRight: "4px",
+                      width: "1.2em",
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      whiteSpace: "nowrap",
+                      overflowX: "auto",
+                      display: "block",
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {isResumeUpload.fileName
+                      ? isResumeUpload.fileName
+                      : "Choose the file"}
+                  </Typography>
+                </Stack>
+                {isResumeUpload.file && (
+                  <CloseRoundedIcon
+                    sx={{ position: "absolute", right: "8px", top: "9px" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setResumeFile(null);
+                      setIsResumeUpload((prev) => ({
+                        ...prev,
+                        file: null,
+                        fileName: "",
+                      }));
+                    }}
+                  />
+                )}
+              </Stack>
+            )}
+
             <Stack
               sx={{
                 borderRadius: "8px",
                 border: "1px solid rgba(0, 0, 0, 0.16)",
-                gap: 2,
+                gap: isMobile ? 0.5 : 2,
                 flexDirection: "row",
                 alignItems: "center",
-                padding: "8px 16px",
+                padding: isMobile ? "4px" : "8px 16px",
                 marginBottom: "27px",
                 margin: "0 auto",
               }}
@@ -271,9 +371,7 @@ export default function SocialLoginCard() {
               <Button
                 variant="outlined"
                 fullWidth
-                sx={{
-                  border: "none",
-                }}
+                sx={OAuthButtonStyle}
                 onClick={() => handleSocialLogin("google")}
               >
                 <GoogleIcon sx={{ width: "32px", height: "32px" }} />
@@ -281,10 +379,7 @@ export default function SocialLoginCard() {
               <Button
                 variant="outlined"
                 fullWidth
-                sx={{
-                  border: "none",
-                  pointerEvents: "none",
-                }}
+                sx={OAuthButtonStyle}
                 onClick={() => handleSocialLogin("linkedin")}
               >
                 <LinkedInIcon sx={{ width: "32px", height: "32px" }} />
@@ -292,10 +387,7 @@ export default function SocialLoginCard() {
               <Button
                 variant="outlined"
                 fullWidth
-                sx={{
-                  border: "none",
-                  pointerEvents: "none",
-                }}
+                sx={OAuthButtonStyle}
                 onClick={() => handleSocialLogin("twitter")}
               >
                 <XIcon sx={{ width: "32px", height: "32px" }} />
@@ -303,10 +395,7 @@ export default function SocialLoginCard() {
               <Button
                 variant="outlined"
                 fullWidth
-                sx={{
-                  border: "none",
-                  pointerEvents: "none",
-                }}
+                sx={OAuthButtonStyle}
                 onClick={() => handleSocialLogin("facebook")}
               >
                 <FacebookIcon sx={{ width: "32px", height: "32px" }} />
@@ -351,6 +440,64 @@ export default function SocialLoginCard() {
                   {`Time: ${timerRef.current}`}
                 </Typography>
               </Stack>
+              {isResumeUpload.status && (
+                <Stack mt={4} sx={{ position: "relative" }}>
+                  <input
+                    type="file"
+                    hidden
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx"
+                    ref={fileInputRef}
+                  />
+                  <Stack
+                    flexDirection="row"
+                    alignItems="center"
+                    onClick={() => fileInputRef.current.click()}
+                    sx={{
+                      // background: "#DFF0FF",
+                      border: "1px solid #b3bac5",
+                      borderRadius: "8px",
+                      // boxShadow: "4px 4px 4px 4px rgba(10, 102, 194, 0.25)",
+                      padding: "8px 34px 8px 8px",
+                      gap: "8px",
+                    }}
+                  >
+                    <AttachFileRoundedIcon
+                      sx={{
+                        borderRight: "2px solid #b3bac5",
+                        paddingRight: "4px",
+                        width: "1.2em",
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflowX: "auto",
+                        display: "block",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      {isResumeUpload.fileName
+                        ? isResumeUpload.fileName
+                        : "Choose the file"}
+                    </Typography>
+                  </Stack>
+                  {isResumeUpload.file && (
+                    <CloseRoundedIcon
+                      sx={{ position: "absolute", right: "8px", top: "9px" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setResumeFile(null);
+                        setIsResumeUpload((prev) => ({
+                          ...prev,
+                          file: null,
+                          fileName: "",
+                        }));
+                      }}
+                    />
+                  )}
+                </Stack>
+              )}
             </Stack>
             <Box mt={3}>
               <Button
@@ -382,4 +529,6 @@ export default function SocialLoginCard() {
       </CardContent>
     </Card>
   );
-}
+};
+
+export default SocialLoginCard;

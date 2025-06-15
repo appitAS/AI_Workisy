@@ -2,9 +2,9 @@ import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
-import ModelDropdown from "../components/ModelDropdown";
-import SearchBar from "../components/SearchBar";
-import UploadButton from "../components/UploadButton";
+import ModelDropdown from "../Components/ModelDropdown";
+import SearchBar from "../Components/SearchBar";
+import UploadButton from "../Components/UploadButton";
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
