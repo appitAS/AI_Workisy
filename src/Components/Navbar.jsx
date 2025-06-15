@@ -13,6 +13,7 @@ import { Avatar, IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import PowerSettingsNewRoundedIcon from "@mui/icons-material/PowerSettingsNewRounded";
 import useIsMobile from "./useIsMobile";
+import useJobStore from "../store/jobStore";
 
 // Custom Globe SVG Icon as a React component
 function GlobeIcon(props) {
@@ -32,6 +33,7 @@ export default function Navbar() {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { setResumeFile } = useJobStore();
 
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -39,6 +41,27 @@ export default function Navbar() {
     ? JSON.parse(Cookies.get("user_data"))
     : "";
   const auth_token = Cookies.get("auth_token");
+
+  const getRandomColor = () => {
+    const colors = [
+      "#F44336",
+      "#E91E63",
+      "#9C27B0",
+      "#3F51B5",
+      "#2196F3",
+      "#03A9F4",
+      "#00BCD4",
+      "#009688",
+      "#4CAF50",
+      "#8BC34A",
+      "#FFC107",
+      "#FF9800",
+      "#FF5722",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const randomColor = getRandomColor();
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -49,6 +72,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     setAnchorElUser(null);
+    setResumeFile(null);
     const allCookies = Cookies.get();
 
     Object.keys(allCookies).forEach((cookieName) => {
@@ -133,10 +157,22 @@ export default function Navbar() {
                   sx={{ fontSize: 18, marginRight: 2, color: "#757575" }}
                 />
                 <Avatar
-                  sx={{ width: 30, height: 30 }}
-                  src="https://i.pravatar.cc/150?img=3"
+                  sx={{
+                    width: 30,
+                    height: 30,
+                    bgcolor: !userData?.profile_img?.trim()
+                      ? randomColor
+                      : "transparent",
+                  }}
+                  src={userData.profile_img}
                 >
-                  <PersonIcon />
+                  {/* <PersonIcon /> */}
+
+                  {(!userData.profile_img ||
+                    userData.profile_img.trim() === "") &&
+                  userData.name
+                    ? userData.name.charAt(0).toUpperCase()
+                    : null}
                 </Avatar>
               </IconButton>
               <Menu
@@ -174,9 +210,24 @@ export default function Navbar() {
                   }}
                 >
                   <Avatar
-                    src="https://i.pravatar.cc/150?img=3"
-                    sx={{ width: 56, height: 56, mb: 1 }}
-                  />
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      mb: 1,
+                      bgcolor: !userData?.profile_img?.trim()
+                        ? randomColor
+                        : "transparent",
+                    }}
+                    src={userData.profile_img}
+                  >
+                    {/* <PersonIcon /> */}
+
+                    {(!userData.profile_img ||
+                      userData.profile_img.trim() === "") &&
+                    userData.name
+                      ? userData.name.charAt(0).toUpperCase()
+                      : null}
+                  </Avatar>
                   <Typography variant="subtitle1" fontWeight="bold">
                     {userData.name}
                   </Typography>

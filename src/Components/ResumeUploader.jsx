@@ -88,7 +88,7 @@ export default function ResumeUploader() {
         borderRadius: 3,
         position: "relative",
         // eslint-disable-next-line no-extra-boolean-cast
-        height: resumeFile !== "" ? "100%" : "227px",
+        height: "100%",
         overflow: "auto",
       }}
     >

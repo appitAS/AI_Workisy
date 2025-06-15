@@ -39,7 +39,6 @@ const SocialLoginCard = () => {
     fileName: "",
     status: false,
   });
-
   const timerRef = useRef(0);
   const timerDisplayRef = useRef(null);
   const intervalRef = useRef(null);
@@ -101,10 +100,11 @@ const SocialLoginCard = () => {
         showSuccessToast(data?.message);
         if (data?.isUserExist) {
           setSession(data);
-          setTimeout(
-            () => window.open(location?.state?.job?.job_url, "_blank"),
-            2000
-          );
+          if (location?.state?.job?.job_url)
+            setTimeout(
+              () => window.open(location?.state?.job?.job_url, "_blank"),
+              2000
+            );
           navigate("/jobs", { replace: true });
         } else {
           setOtp((prev) => ({ ...prev, status: true }));
@@ -136,6 +136,7 @@ const SocialLoginCard = () => {
       else {
         showSuccessToast(data?.message);
         setSession(data);
+        setResumeFile(null);
         window.open(location?.state?.job?.job_url, "_blank");
 
         navigate("/jobs", { replace: true });
@@ -299,7 +300,7 @@ const SocialLoginCard = () => {
               <Typography> ---------- Or ----------</Typography>
             </Stack>
 
-            {isResumeUpload.status && (
+            {isMobile && isResumeUpload.status && (
               <Stack mt={2} mb={2} sx={{ position: "relative" }}>
                 <input
                   type="file"
