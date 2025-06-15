@@ -73,9 +73,7 @@ const SendButton = styled(IconButton)(({ theme, disabled }) => ({
   padding: 10,
   borderRadius: "8px",
   "&:hover": {
-    backgroundColor: disabled
-      ? "#e0e0e0"
-      : theme.palette.primary.dark,
+    backgroundColor: disabled ? "#e0e0e0" : theme.palette.primary.dark,
   },
 }));
 
@@ -134,6 +132,7 @@ const ChatInput = () => {
     handleMenuClose();
   };
 
+  console.log(jobs);
   const handleSearch = async () => {
     if (isLoading) {
       // Cancel current request and restore jobs
@@ -181,8 +180,7 @@ const ChatInput = () => {
       if (axios.isCancel(err)) {
         console.log("Search was cancelled.");
       } else {
-        const errorMsg =
-          err?.response?.data?.error || "Something went wrong.";
+        const errorMsg = err?.response?.data?.error || "Something went wrong.";
         showErrorToast(errorMsg);
         setError({ status: 500, message: errorMsg });
       }
@@ -204,15 +202,16 @@ const ChatInput = () => {
     const formData = new FormData();
     formData.append("model", onselectedModel.name);
     formData.append("resume", file);
-    formData.append(
-      "userId",
-      sessionStorage.getItem("job_session_id") || null
-    );
+    formData.append("userId", sessionStorage.getItem("job_session_id") || null);
 
     try {
-      const response = await axios.post(endpoints.getJobFromResume.url, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        endpoints.getJobFromResume.url,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       const { jobs, prompt } = response.data?.data || {};
 

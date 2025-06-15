@@ -10,7 +10,6 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import StyledInputLabel from "./StyledComponents/StyledInputLabel";
 import StyledInput from "./StyledComponents/StyledInput";
 import GoogleIcon from "../assets/GoogleIcon";
@@ -18,10 +17,17 @@ import XIcon from "../assets/XIcon";
 import { showErrorToast, showSuccessToast } from "./ToastNotifier";
 import { useLocation, useNavigate } from "react-router-dom";
 import endpoints from "../utils/endPoint";
+import FacebookIcon from "../assets/FacebookIcon";
+import LinkedInIcon from "../assets/LinkedInIcon";
+import useJobStore from "../store/jobStore";
 
-export default function SocialLoginCard({ resumeFile }) {
+export default function SocialLoginCard() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { resumeFile } = useJobStore();
+
+  console.log(resumeFile);
 
   const [state, setState] = useState({ name: "", email: "" });
   const [otp, setOtp] = useState({ otp: "", status: false });
@@ -34,7 +40,7 @@ export default function SocialLoginCard({ resumeFile }) {
   const isVerifyOtpDisabled = otp.status && otp.otp.length === 6;
   const isSubmitDisabled = !!state.name && !!state.email;
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));
   };
@@ -55,8 +61,13 @@ export default function SocialLoginCard({ resumeFile }) {
         "Error uploading resume:",
         error.response?.data || error.message
       );
-      showErrorToast("Resume upload failed. Please try again.");
+      showErrorToast(error.response?.data || error.message);
     }
+  };
+
+  const setSession = (data) => {
+    Cookies.set("user_data", JSON.stringify(data.user_data));
+    Cookies.set("auth_token", data?.token?.value);
   };
 
   const sendOTP = async () => {
@@ -67,11 +78,20 @@ export default function SocialLoginCard({ resumeFile }) {
       });
 
       const { data } = response;
-      console.log("OTP Sent Successfully", data);
       if (data.error) showErrorToast(data.message);
       else {
         showSuccessToast(data?.message);
-        setOtp((prev) => ({ ...prev, status: true }));
+        if (data?.isUserExist) {
+          setSession(data);
+          setTimeout(
+            () => window.open(location?.state?.job?.job_url, "_blank"),
+            2000
+          );
+          navigate("/jobs", { replace: true });
+        } else {
+          setOtp((prev) => ({ ...prev, status: true }));
+          startTimer();
+        }
       }
     } catch (error) {
       console.error(
@@ -79,7 +99,7 @@ export default function SocialLoginCard({ resumeFile }) {
         error.response?.data || error.message
       );
 
-      showErrorToast("Failed to send OTP. Please try again.");
+      showErrorToast(error.response?.data || error.message);
     }
   };
 
@@ -89,6 +109,7 @@ export default function SocialLoginCard({ resumeFile }) {
         name: state.name,
         email: state.email,
         otp: otp.otp,
+        resumePath: resumeFile,
       });
 
       const { data } = response;
@@ -96,10 +117,9 @@ export default function SocialLoginCard({ resumeFile }) {
       if (data.error) showErrorToast(data.message);
       else {
         showSuccessToast(data?.message);
-        Cookies.set("user_data", JSON.stringify(data.user_data));
-
+        setSession(data);
         await uploadResume(data.user_data);
-        window.open(location.state.jobUrl, "_blank");
+        window.open(location?.state?.job?.job_url, "_blank");
 
         navigate("/jobs", { replace: true });
       }
@@ -108,12 +128,12 @@ export default function SocialLoginCard({ resumeFile }) {
         "Error verifying OTP:",
         error.response?.data || error.message
       );
-      showErrorToast("Invalid OTP. Please try again.");
+      showErrorToast(error?.response?.data?.message || error?.message);
     }
   };
 
   const startTimer = () => {
-    timerRef.current = 300;
+    timerRef.current = 60;
     setIsResendOOtpClickable(false);
 
     if (timerDisplayRef.current) {
@@ -141,18 +161,20 @@ export default function SocialLoginCard({ resumeFile }) {
   const reSendOtp = () => {
     if (timerRef.current === 0) {
       sendOTP();
+      setOtp((prev) => ({ ...prev, otp: "" }));
       startTimer();
     }
   };
 
+  const handleSocialLogin = (provider) => {
+    window.location.href = `http://localhost:3000/api/auth/${provider}?redirectUrl=${encodeURIComponent(
+      location?.state?.job?.job_url
+    )}`;
+  };
+
   const onSubmit = () => {
-    if (otp.status === false) {
-      setOtp((prev) => ({ ...prev, send: true }));
-      sendOTP();
-      startTimer();
-    } else {
-      verifyOTP();
-    }
+    if (otp.status === false) sendOTP();
+    else verifyOTP();
   };
 
   useEffect(() => {
@@ -185,7 +207,7 @@ export default function SocialLoginCard({ resumeFile }) {
                   name="name"
                   placeholder="Enter Your Name "
                   value={state.name}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                 />
                 {/* {errors.email && (
                   <FormHelperText error>{errors.name}</FormHelperText>
@@ -200,7 +222,7 @@ export default function SocialLoginCard({ resumeFile }) {
                   name="email"
                   placeholder="Enter Your Email "
                   value={state.email}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                 />
               </Stack>
             </Stack>
@@ -251,6 +273,7 @@ export default function SocialLoginCard({ resumeFile }) {
                 sx={{
                   border: "none",
                 }}
+                onClick={() => handleSocialLogin("google")}
               >
                 <GoogleIcon sx={{ width: "32px", height: "32px" }} />
               </Button>
@@ -260,6 +283,7 @@ export default function SocialLoginCard({ resumeFile }) {
                 sx={{
                   border: "none",
                 }}
+                onClick={() => handleSocialLogin("linkedin")}
               >
                 <LinkedInIcon sx={{ width: "32px", height: "32px" }} />
               </Button>
@@ -269,8 +293,19 @@ export default function SocialLoginCard({ resumeFile }) {
                 sx={{
                   border: "none",
                 }}
+                onClick={() => handleSocialLogin("twitter")}
               >
                 <XIcon sx={{ width: "32px", height: "32px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{
+                  border: "none",
+                }}
+                onClick={() => handleSocialLogin("facebook")}
+              >
+                <FacebookIcon sx={{ width: "32px", height: "32px" }} />
               </Button>
             </Stack>
           </>

@@ -1,10 +1,9 @@
 import { Box, Grid, Typography } from "@mui/material";
-import ResumeUploader from "./ResumeUploader";
-import AuthSection from "./AuthSection";
-import JobCard from "./AuthJobCard";
-import { useState } from "react";
+import ResumeUploader from "../components/ResumeUploader";
+import AuthSection from "../components/AuthSection";
+import JobCard from "../components/AuthJobCard";
+
 export default function MainPage() {
-  const [resumeFile, setResumeFile] = useState(null);
   return (
     <Box sx={{ bgcolor: "#fafbff", p: 4, marginTop: "5rem" }}>
       <Typography variant="h4" fontWeight="bold" align="center" mb={1}>
@@ -16,11 +15,11 @@ export default function MainPage() {
       </Typography>
       <Grid container spacing={4} justifyContent="center">
         <Grid item xs={12} md={5}>
-          <ResumeUploader setResumeFile={setResumeFile} />
+          <ResumeUploader />
         </Grid>
         <Grid item xs={12} md={7}>
           <Box>
-            <AuthSection resumeFile={resumeFile} />
+            <AuthSection />
             <Box mt={4}>
               <JobCard />
             </Box>

@@ -4,6 +4,8 @@
  */
 
 const API_BASE_URL = "https://aiworkisyapi.workisy.com/api";
+const API_BASE_URL_ = "http://localhost:3000/api";
+
 const endpoints = {
   getJobsFromConversion: {
     url: `${API_BASE_URL}/jobs`,
@@ -14,15 +16,15 @@ const endpoints = {
     method: "POST",
   },
   authSendOtp: {
-    url: `${API_BASE_URL}/auth/send_otp`,
+    url: `${API_BASE_URL_}/auth/send_otp`,
     method: "POST",
   },
   authVerifyOtp: {
-    url: `${API_BASE_URL}/auth/verify_otp`,
+    url: `${API_BASE_URL_}/auth/verify_otp`,
     method: "POST",
   },
   uploadResume: {
-    url: `${API_BASE_URL}/upload/resume`,
+    url: `${API_BASE_URL_}/upload/resume`,
     method: "POST",
   },
 };

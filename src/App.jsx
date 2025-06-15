@@ -1,11 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./Components/Navbar";
-import Layout from "./Components/Layout";
-import JobCards from "./Components/JobCards";
+import Navbar from "./components/Navbar";
+import Layout from "./pages/Layout";
+import JobCards from "./pages/JobCards";
 import { ToastContainer } from "react-toastify";
-import MainPage from "./Components/AuthMainPage";
-function App() {
+import MainPage from "./pages/AuthMainPage";
+
+const App = () => {
   return (
     <Router>
       {/* Global toast container */}
@@ -19,6 +20,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

@@ -1,30 +1,164 @@
-import { Box, Typography, Chip, Stack, Avatar, Paper } from '@mui/material';
-import BusinessIcon from '@mui/icons-material/Business';
+import { Box, Typography, Chip, Stack, Avatar, Paper } from "@mui/material";
+import GraduateIcon from "../assets/GraduateIcon";
+import LocationIcon from "../assets/LocationIcon";
+import { CompanyLogoOrAvatar } from "../pages/JobCards";
+import { useLocation } from "react-router-dom";
 
 export default function JobCard() {
+  const { state } = useLocation();
+  console.log(state);
   return (
-    <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <Avatar sx={{ bgcolor: 'white', width: 56, height: 56 }}>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft" width={40} />
-        </Avatar>
-        <Box>
-          <Typography variant="h6" fontWeight="bold">
-            Sr Ui/Ux Designer And Developer
-          </Typography>
-          <Typography variant="subtitle2" color="textSecondary">
-            ₹8,00,000-12,00,000 Lpa
-          </Typography>
-          <Stack direction="row" spacing={1} mt={1}>
-            <Chip label="FULL TIME" size="small" />
-            <Chip label="REMOTE" size="small" />
-            <Chip label="2yr+ Exp" size="small" />
-          </Stack>
-          <Stack direction="row" spacing={2} mt={1}>
-            <Typography variant="body2">Hyderabad</Typography>
-            <Typography variant="body2">Any Graduate</Typography>
-          </Stack>
-        </Box>
+    <Paper
+      elevation={2}
+      sx={{
+        padding: "18px",
+        borderRadius: 3,
+        background: "#FFF",
+        boxShadow: "0px 0px 4px 3px rgba(0, 0, 0, 0.10)",
+      }}
+    >
+      <Stack>
+        <Typography
+          sx={{
+            color: "#0066B3",
+            fontSize: "16px",
+            fontWeight: 600,
+            lineHeight: "120%",
+            marginBottom: "18px",
+          }}
+        >
+          About this job
+        </Typography>
+        <Stack direction="row" spacing={8} alignItems="self-start">
+          <Box>
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{
+                color: "#000",
+                fontSize: "21px",
+                fontWeight: 600,
+                lineHeight: "120%",
+                maxWidth: "285px",
+                marginBottom: "18px",
+              }}
+            >
+              {state?.job?.job_title || "Job Title"}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+              sx={{
+                color: "#3D3D3D",
+                fontSize: "21px",
+                fontWeight: 600,
+                lineHeight: "120%",
+                marginBottom: "18px",
+              }}
+            >
+              {`₹ ${state?.job?.salary}`}
+            </Typography>
+            <Stack direction="row" spacing={1} mb="26px">
+              <Chip
+                label={state?.job?.job_type}
+                size="small"
+                sx={{
+                  borderRadius: "8p",
+                  background: "#FFF",
+                  boxShadow: "0px 0px 4px 1px rgba(0, 0, 0, 0.25)",
+                  padding: "5px 10px",
+                  color: "#055087",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  lineHeight: "120%",
+                }}
+              />
+              <Chip
+                label={state?.job?.job_location?.split("/")[0]}
+                size="small"
+                sx={{
+                  borderRadius: "8p",
+                  background: "#FFF",
+                  boxShadow: "0px 0px 4px 1px rgba(0, 0, 0, 0.25)",
+                  padding: "5px 10px",
+                  color: "#055087",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  lineHeight: "120%",
+                }}
+              />
+              <Chip
+                label="2yr+ Exp"
+                size="small"
+                sx={{
+                  borderRadius: "8p",
+                  background: "#FFF",
+                  boxShadow: "0px 0px 4px 1px rgba(0, 0, 0, 0.25)",
+                  padding: "5px 10px",
+                  color: "#055087",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  lineHeight: "120%",
+                }}
+              />
+            </Stack>
+            <Stack direction="row" spacing={2} mt={1}>
+              <Stack gap={1}>
+                <Typography
+                  sx={{
+                    color: "#000",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    lineHeight: "120%",
+                  }}
+                >
+                  Job Location
+                </Typography>
+                <Stack direction="row" gap={1} alignItems="center">
+                  <LocationIcon />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#000",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      lineHeight: "120%",
+                    }}
+                  >
+                    {state?.job?.job_location}
+                  </Typography>
+                </Stack>
+              </Stack>
+              <Stack gap={1}>
+                <Typography
+                  sx={{
+                    color: "#000",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    lineHeight: "120%",
+                  }}
+                >
+                  Education
+                </Typography>
+                <Stack direction="row" gap={1} alignItems="center">
+                  <GraduateIcon />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#000",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      lineHeight: "120%",
+                    }}
+                  >
+                    {state?.job?.education_qualification || "Not Available"}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+          </Box>
+          <CompanyLogoOrAvatar company="Google" />
+        </Stack>
       </Stack>
     </Paper>
   );

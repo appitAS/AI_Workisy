@@ -8,12 +8,39 @@ import { useNavigate } from "react-router-dom";
 import endpoints from "../utils/endPoint";
 
 export default function UploadButton() {
-  const { onselectedModel, setJobs, setPrompt, setIsLoading, isLoading,setError } =
-    useJobStore();
+  const {
+    onselectedModel,
+    setJobs,
+    setPrompt,
+    setIsLoading,
+    isLoading,
+    setError,
+    setResumeFile,
+  } = useJobStore();
   const navigate = useNavigate();
 
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState("");
+
+  const uploadResume = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const { data } = await axios.post(endpoints.uploadResume.url, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Resume Uploaded Successfully", data);
+      setResumeFile(data?.filePath);
+    } catch (error) {
+      console.error(
+        "Error uploading resume:",
+        error.response?.data || error.message
+      );
+      showErrorToast("Resume upload failed. Please try again.");
+    }
+  };
 
   const handleFileChange = async (e) => {
     setJobs([]); // Clear previous jobs
@@ -21,7 +48,7 @@ export default function UploadButton() {
 
     const file = e.target.files[0];
     if (!file) return;
-
+    uploadResume(file);
     setFileName(file.name);
     setIsLoading(true);
 

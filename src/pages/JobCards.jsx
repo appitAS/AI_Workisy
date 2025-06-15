@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -13,13 +13,14 @@ import Cookies from "js-cookie";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SchoolIcon from "@mui/icons-material/School";
-import JobCardSearchBar from "./JobCardSercBar";
+import JobCardSearchBar from "../components/JobCardSercBar";
 import useJobStore from "../store/jobStore";
-import BackButton from "./BackButton";
-import JobCardSkeleton from "./JobCardSkeleton";
-import NotFound from "./NotFound";
+import BackButton from "../components/BackButton";
+import JobCardSkeleton from "../components/JobCardSkeleton";
+import NotFound from "../components/NotFound";
+import { useEffect, useRef } from "react";
 
-const CompanyLogoOrAvatar = ({ logo, company }) => (
+export const CompanyLogoOrAvatar = ({ logo, company }) => (
   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
     {logo ? (
       <Box sx={{ mr: 1 }}>{logo}</Box>
@@ -45,6 +46,10 @@ const CompanyLogoOrAvatar = ({ logo, company }) => (
 
 const JobCard = () => {
   const { jobs, isLoading, prompt, error } = useJobStore();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const hasOpened = useRef(false);
 
   const getValidUrl = (url) => {
     if (!url) return "#";
@@ -53,20 +58,30 @@ const JobCard = () => {
       : `https://${url}`;
   };
 
-  const navigate = useNavigate();
-
   const isUserLoggedIn = () => {
     return !!Cookies.get("user_data");
   };
 
-  const handleViewJob = (jobUrl) => {
+  const handleViewJob = (job) => {
     if (isUserLoggedIn()) {
-      window.open(getValidUrl(jobUrl), "_blank");
+      window.open(getValidUrl(job.job_url), "_blank");
     } else {
-      navigate("/signup", { state: { jobUrl: getValidUrl(jobUrl) } });
+      navigate("/signup", {
+        state: { job: { ...job, job_url: getValidUrl(job.job_url) } },
+      });
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    const jobUrl = params.get("jobUrl");
+    if (jobUrl && !hasOpened.current) {
+      hasOpened.current = true;
+      window.open(jobUrl, "_blank");
+      navigate("/jobs");
+    }
+  }, []);
   return (
     <>
       {!isLoading && error ? (
@@ -304,7 +319,7 @@ const JobCard = () => {
                         }}
                       >
                         <Button
-                          onClick={() => handleViewJob(job.job_url)}
+                          onClick={() => handleViewJob(job)}
                           variant="contained"
                           fullWidth
                           sx={{

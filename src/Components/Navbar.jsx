@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
@@ -9,6 +9,9 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { Avatar, IconButton, Typography } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import PowerSettingsNewRoundedIcon from "@mui/icons-material/PowerSettingsNewRounded";
 
 // Custom Globe SVG Icon as a React component
 function GlobeIcon(props) {
@@ -28,15 +31,30 @@ export default function Navbar() {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
   const userData = Cookies.get("user_data")
     ? JSON.parse(Cookies.get("user_data"))
     : "";
+  const auth_token = Cookies.get("auth_token");
+
+  console.log(Cookies.get("user_data"));
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    setAnchorElUser(null);
+    const allCookies = Cookies.get();
+
+    Object.keys(allCookies).forEach((cookieName) => {
+      Cookies.remove(cookieName);
+    });
+    navigate("/");
   };
 
   return (
@@ -92,29 +110,115 @@ export default function Navbar() {
           </Menu>
 
           {/* Sign Up Button */}
-          <Button
-            variant="contained"
-            startIcon={<PersonIcon />}
-            onClick={() => !userData.email && navigate("/signup")}
-            sx={{
-              background: "#222",
-              color: "#fff",
-              textTransform: "none",
-              borderRadius: "20px",
-              fontWeight: 500,
-              fontSize: 14,
-              px: 2,
-              py: 1,
-              pointerEvents: userData.email ? "none" : "auto",
-              boxShadow: "none",
-              "&:hover": {
-                background: "#111",
+          {auth_token ? (
+            <>
+              <IconButton
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "4px 8px",
+                  borderRadius: "20px",
+                  border: "1px solid #e0e0e0",
+                  backgroundColor: "#fff",
+                }}
+                onClick={(e) => setAnchorElUser(e.currentTarget)}
+              >
+                <MenuIcon
+                  sx={{ fontSize: 18, marginRight: 2, color: "#757575" }}
+                />
+                <Avatar
+                  sx={{ width: 30, height: 30 }}
+                  src="https://i.pravatar.cc/150?img=3"
+                >
+                  <PersonIcon />
+                </Avatar>
+              </IconButton>
+              <Menu
+                sx={{
+                  mt: "45px",
+                  p: 2,
+                  "& .MuiPaper-root.MuiPaper-elevation": {
+                    borderRadius: "12px",
+                  },
+
+                  "& .MuiList-root.MuiList-padding": {
+                    padding: 2,
+                  },
+                }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={() => setAnchorElUser(null)}
+              >
+                <Box
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Avatar
+                    src="https://i.pravatar.cc/150?img=3"
+                    sx={{ width: 56, height: 56, mb: 1 }}
+                  />
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {userData.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {userData.email}
+                  </Typography>
+                </Box>
+
+                <Button
+                  onClick={handleLogout}
+                  fullWidth
+                  startIcon={<PowerSettingsNewRoundedIcon />}
+                  sx={{
+                    borderRadius: "24px",
+                    background: "#fa0202",
+                    color: "#FFF",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Logout
+                </Button>
+              </Menu>
+            </>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<PersonIcon />}
+              onClick={() => !userData.email && navigate("/signup")}
+              sx={{
+                background: "#222",
+                color: "#fff",
+                textTransform: "none",
+                borderRadius: "20px",
+                fontWeight: 500,
+                fontSize: 14,
+                px: 2,
+                py: 1,
+                pointerEvents: userData.email ? "none" : "auto",
                 boxShadow: "none",
-              },
-            }}
-          >
-            {userData.email ? userData.name : "Sign Up"}
-          </Button>
+                "&:hover": {
+                  background: "#111",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              Sign Up
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
