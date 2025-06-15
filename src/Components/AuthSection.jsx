@@ -185,7 +185,9 @@ const SocialLoginCard = () => {
 
   const handleSocialLogin = (provider) => {
     if (resumeFile)
-      window.location.href = `http://localhost:3000/api/auth/${provider}?redirectUrl=${encodeURIComponent(
+      window.location.href = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/auth/${provider}?redirectUrl=${encodeURIComponent(
         location?.state?.job?.job_url
       )}&filePath=${resumeFile}`;
     else {
