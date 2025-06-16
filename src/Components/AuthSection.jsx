@@ -443,7 +443,7 @@ const SocialLoginCard = () => {
                   {`Time: ${timerRef.current}`}
                 </Typography>
               </Stack>
-              {isResumeUpload.status && (
+              {isMobile && isResumeUpload.status && (
                 <Stack mt={4} sx={{ position: "relative" }}>
                   <input
                     type="file"
