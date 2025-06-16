@@ -72,15 +72,39 @@ const JobCard = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search);
+
+  //   const jobUrl = params.get("jobUrl");
+  //   if (jobUrl && !hasOpened.current) {
+  //     hasOpened.current = true;
+  //     window.open(jobUrl, "_blank");
+  //     navigate("/jobs");
+  //   }
+  // }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
+    const token = params.get("token");
+    const userData = params.get("user");
+
+    // ✅ Set cookies in browser
+    if (token && userData) {
+      document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=None; Secure`;
+      document.cookie = `user_data=${encodeURIComponent(
+        userData
+      )}; path=/; max-age=86400; SameSite=None; Secure`;
+    }
+
+    // ✅ Handle jobUrl redirection
     const jobUrl = params.get("jobUrl");
-    if (jobUrl && !hasOpened.current) {
+    const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+    if (jobUrl && urlPattern.test(jobUrl) && !hasOpened.current) {
       hasOpened.current = true;
       window.open(jobUrl, "_blank");
       navigate("/jobs");
-    }
+    } else navigate("/");
   }, []);
   return (
     <>
