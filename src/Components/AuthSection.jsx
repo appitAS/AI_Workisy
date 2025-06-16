@@ -208,14 +208,14 @@ const SocialLoginCard = () => {
   const handleFileChange = async (e) => {
     const selected = e.target.files[0];
     if (selected) {
-      if (selected.size < 1024 * 1024) {
+      if (selected.size < 10 * 1024 * 1024) {
         setIsResumeUpload((prev) => ({
           ...prev,
           file: selected,
           fileName: selected.name,
         }));
         await uploadResume(selected);
-      } else showErrorToast("Resume File should be less than 1 MB");
+      } else showErrorToast("Resume File should be less than 10 MB");
     }
   };
 

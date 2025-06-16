@@ -52,9 +52,9 @@ export default function ResumeUploader() {
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (selected) {
-      if (selected.size < 1024 * 1024) {
+      if (selected.size < 10 * 1024 * 1024) {
         uploadResume(selected);
-      } else showErrorToast("Resume File should be less than 1 MB");
+      } else showErrorToast("Resume File should be less than 10 MB");
     }
   };
 
@@ -173,7 +173,7 @@ export default function ResumeUploader() {
               >
                 Browse
               </Button>
-              <Typography>Maximum Size: 1 MB</Typography>
+              <Typography>Maximum Size: 10 MB</Typography>
             </Stack>
           </>
         )}
