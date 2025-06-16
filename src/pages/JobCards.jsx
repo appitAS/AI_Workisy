@@ -104,7 +104,7 @@ const JobCard = () => {
       hasOpened.current = true;
       window.open(jobUrl, "_blank");
       navigate("/jobs");
-    } else navigate("/");
+    }
   }, []);
   return (
     <>

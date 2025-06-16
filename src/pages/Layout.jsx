@@ -5,6 +5,8 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import ModelDropdown from "../Components/ModelDropdown";
 import SearchBar from "../Components/SearchBar";
 import UploadButton from "../Components/UploadButton";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
@@ -14,6 +16,24 @@ const GradientText = styled("span")({
 });
 
 export default function Layout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    const token = params.get("token");
+    const userData = params.get("user");
+
+    if (token && userData) {
+      document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=None; Secure`;
+      document.cookie = `user_data=${encodeURIComponent(
+        userData
+      )}; path=/; max-age=86400; SameSite=None; Secure`;
+      navigate("/");
+    }
+  }, []);
+
   return (
     <Box
       sx={{
