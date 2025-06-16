@@ -100,7 +100,10 @@ export default function Navbar() {
         }}
       >
         {/* Logo */}
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box
+          sx={{ display: "flex", alignItems: "center" }}
+          onClick={() => navigate("/")}
+        >
           <img
             src="/workisy logo-01.png"
             alt="workisy logo"
