@@ -6,6 +6,8 @@ import {
   Paper,
   Stack,
   IconButton,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import BackupRoundedIcon from "@mui/icons-material/BackupRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -21,10 +23,12 @@ export default function ResumeUploader() {
   console.log(resumeFile, "resme");
 
   const [dragOver, setDragOver] = useState(false);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef();
 
   const uploadResume = async (file) => {
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -40,6 +44,8 @@ export default function ResumeUploader() {
         error.response?.data || error.message
       );
       showErrorToast("Resume upload failed. Please try again.");
+    } finally {
+      setTimeout(() => setLoading(false), 2000);
     }
   };
 
@@ -88,7 +94,7 @@ export default function ResumeUploader() {
         borderRadius: 3,
         position: "relative",
         // eslint-disable-next-line no-extra-boolean-cast
-        height: "100%",
+        height: !!resumeFile ? "100%" : "auto",
         overflow: "auto",
       }}
     >
@@ -113,12 +119,11 @@ export default function ResumeUploader() {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        height="100%"
         // eslint-disable-next-line no-extra-boolean-cast
         sx={!!resumeFile ? { height: "100%" } : {}}
       >
         {resumeFile ? (
-          <FileRenderer file={resumeFile} />
+          <FileRenderer file={resumeFile} key={resumeFile} />
         ) : (
           <>
             <input
@@ -173,6 +178,12 @@ export default function ResumeUploader() {
           </>
         )}
       </Box>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Paper>
   );
 }

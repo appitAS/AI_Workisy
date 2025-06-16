@@ -10,7 +10,13 @@ const MainPage = () => {
   const isMobile = useIsMobile();
 
   return (
-    <Box sx={{ p: 4, marginTop: "5rem" }}>
+    <Box
+      sx={{
+        p: 4,
+        maxWidth: "calc(100vw - 250px)",
+        margin: "5rem auto 0 auto",
+      }}
+    >
       <Typography
         variant="h4"
         fontWeight="bold"

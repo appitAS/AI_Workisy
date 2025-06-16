@@ -33,7 +33,6 @@ const SocialLoginCard = () => {
 
   const [state, setState] = useState({ name: "", email: "" });
   const [otp, setOtp] = useState({ otp: "", status: false });
-  const [isResendOOtpClickable, setIsResendOOtpClickable] = useState(false);
   const [isResumeUpload, setIsResumeUpload] = useState({
     file: null,
     fileName: "",
@@ -51,9 +50,21 @@ const SocialLoginCard = () => {
         border: "none",
         padding: "4px",
         minWidth: "max-content !important",
+
+        borderRadius: "24px",
+        boxShadow: "1px 3px 4px 4px rgba(0, 0, 0, 0.25)",
+        margin: "0 auto",
+        textTransform: "capitalize",
       }
     : {
-        border: "none",
+        // border: "none",
+        border: "1px solid rgba(0, 0, 0, 0.16)",
+
+        borderRadius: "24px",
+        boxShadow: "1px 3px 4px 4px rgba(0, 0, 0, 0.25)",
+        maxWidth: 300,
+        margin: "0 auto",
+        textTransform: "capitalize",
       };
 
   const handleInputChange = (e) => {
@@ -137,9 +148,10 @@ const SocialLoginCard = () => {
         showSuccessToast(data?.message);
         setSession(data);
         setResumeFile(null);
-        window.open(location?.state?.job?.job_url, "_blank");
-
-        navigate("/jobs", { replace: true });
+        if (location?.state?.job?.job_url) {
+          window.open(location?.state?.job?.job_url, "_blank");
+          navigate("/jobs", { replace: true });
+        } else navigate("/", { replace: true });
       }
     } catch (error) {
       console.error(
@@ -151,11 +163,10 @@ const SocialLoginCard = () => {
   };
 
   const startTimer = () => {
-    timerRef.current = 60;
-    setIsResendOOtpClickable(false);
+    timerRef.current = 300;
 
     if (timerDisplayRef.current) {
-      timerDisplayRef.current.innerText = `Time: ${timerRef.current}`;
+      timerDisplayRef.current.innerText = `OTP expired in : ${timerRef.current}`;
     }
 
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -165,11 +176,10 @@ const SocialLoginCard = () => {
         timerRef.current -= 1;
 
         if (timerDisplayRef.current) {
-          timerDisplayRef.current.innerText = `Time: ${timerRef.current}`;
+          timerDisplayRef.current.innerText = `OTP expired in: ${timerRef.current}`;
         }
 
         if (timerRef.current === 0) {
-          setIsResendOOtpClickable(true);
           clearInterval(intervalRef.current);
         }
       }
@@ -177,11 +187,8 @@ const SocialLoginCard = () => {
   };
 
   const reSendOtp = () => {
-    if (timerRef.current === 0) {
-      sendOTP();
-      setOtp((prev) => ({ ...prev, otp: "" }));
-      startTimer();
-    }
+    sendOTP();
+    setOtp((prev) => ({ ...prev, otp: "" }));
   };
 
   const handleSocialLogin = (provider) => {
@@ -362,7 +369,7 @@ const SocialLoginCard = () => {
             <Stack
               sx={{
                 borderRadius: "8px",
-                border: "1px solid rgba(0, 0, 0, 0.16)",
+                // border: "1px solid rgba(0, 0, 0, 0.16)",
                 gap: isMobile ? 0.5 : 2,
                 flexDirection: "row",
                 alignItems: "center",
@@ -377,9 +384,12 @@ const SocialLoginCard = () => {
                 sx={OAuthButtonStyle}
                 onClick={() => handleSocialLogin("google")}
               >
-                <GoogleIcon sx={{ width: "32px", height: "32px" }} />
+                <GoogleIcon
+                  sx={{ width: "32px", height: "32px", marginRight: 1 }}
+                />{" "}
+                SingUp with Google
               </Button>
-              <Button
+              {/* <Button
                 variant="outlined"
                 fullWidth
                 sx={OAuthButtonStyle}
@@ -402,7 +412,7 @@ const SocialLoginCard = () => {
                 onClick={() => handleSocialLogin("facebook")}
               >
                 <FacebookIcon sx={{ width: "32px", height: "32px" }} />
-              </Button>
+              </Button> */}
             </Stack>
           </>
         ) : (
@@ -425,22 +435,20 @@ const SocialLoginCard = () => {
                 <Typography
                   sx={{
                     fontSize: "14px",
-                    color: isResendOOtpClickable ? "#1A669C" : "#999",
-                    cursor: isResendOOtpClickable ? "pointer" : "not-allowed",
+                    color: "#1A669C",
+                    cursor: "pointer",
                   }}
                   component="div"
-                  onClick={() => {
-                    if (isResendOOtpClickable) reSendOtp();
-                  }}
+                  onClick={() => reSendOtp()}
                 >
                   Re-send OTP
                 </Typography>
 
                 <Typography
-                  sx={{ fontSize: "14px", maxWidth: "64px" }}
+                  sx={{ fontSize: "14px", maxWidth: "128px" }}
                   ref={timerDisplayRef}
                 >
-                  {`Time: ${timerRef.current}`}
+                  {`OTP expired in : ${timerRef.current}`}
                 </Typography>
               </Stack>
               {isMobile && isResumeUpload.status && (

@@ -84,7 +84,7 @@ const JobCard = ({ job }) => {
                   lineHeight: "120%",
                 }}
               />
-              <Chip
+              {/* <Chip
                 label="2yr+ Exp"
                 size="small"
                 sx={{
@@ -97,7 +97,7 @@ const JobCard = ({ job }) => {
                   fontWeight: 600,
                   lineHeight: "120%",
                 }}
-              />
+              /> */}
             </Stack>
             <Stack direction="row" spacing={2} mt={1}>
               <Stack gap={1}>
