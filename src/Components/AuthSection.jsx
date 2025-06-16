@@ -387,7 +387,7 @@ const SocialLoginCard = () => {
                 <GoogleIcon
                   sx={{ width: "32px", height: "32px", marginRight: 1 }}
                 />{" "}
-                SingUp with Google
+                SignUp with Google
               </Button>
               {/* <Button
                 variant="outlined"
