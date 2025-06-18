@@ -9,7 +9,9 @@ import {
   Stack,
   Box,
   Typography,
+  styled,
 } from "@mui/material";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import StyledInputLabel from "./StyledComponents/StyledInputLabel";
 import StyledInput from "./StyledComponents/StyledInput";
 import GoogleIcon from "../assets/GoogleIcon";
@@ -24,7 +26,7 @@ import useIsMobile from "./useIsMobile";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-const SocialLoginCard = () => {
+const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -44,7 +46,7 @@ const SocialLoginCard = () => {
   const fileInputRef = useRef();
 
   const isVerifyOtpDisabled = otp.status && otp.otp.length === 6;
-  const isSubmitDisabled = !!state.name && !!state.email;
+  const isSubmitDisabled = !!state.email;
   const OAuthButtonStyle = isMobile
     ? {
         border: "none",
@@ -59,7 +61,6 @@ const SocialLoginCard = () => {
     : {
         // border: "none",
         border: "1px solid rgba(0, 0, 0, 0.16)",
-
         borderRadius: "24px",
         boxShadow: "1px 3px 4px 4px rgba(0, 0, 0, 0.25)",
         maxWidth: 300,
@@ -93,16 +94,37 @@ const SocialLoginCard = () => {
     }
   };
 
+  const getRandomColor = () => {
+    const colors = [
+      "#F44336",
+      "#E91E63",
+      "#9C27B0",
+      "#3F51B5",
+      "#2196F3",
+      "#03A9F4",
+      "#00BCD4",
+      "#009688",
+      "#4CAF50",
+      "#8BC34A",
+      "#FFC107",
+      "#FF9800",
+      "#FF5722",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   const setSession = (data) => {
     Cookies.set("user_data", JSON.stringify(data.user_data));
     Cookies.set("auth_token", data?.token?.value);
+    if (!data?.user_data?.profile_img)
+      Cookies.set("profile_bg", getRandomColor());
   };
 
   const sendOTP = async () => {
     try {
       const response = await axios.post(endpoints.authSendOtp.url, {
         email: state.email,
-        name: state.name,
+        // name: state.name,
       });
 
       const { data } = response;
@@ -143,6 +165,7 @@ const SocialLoginCard = () => {
 
       const { data } = response;
       console.log("OTP Verified Successfully", data);
+      if (setAnchorElLogin) setAnchorElLogin(false);
       if (data.error) showErrorToast(data.message);
       else {
         showSuccessToast(data?.message);
@@ -191,18 +214,30 @@ const SocialLoginCard = () => {
     setOtp((prev) => ({ ...prev, otp: "" }));
   };
 
-  const handleSocialLogin = (provider) => {
-    if (resumeFile)
-      window.location.href = `${
-        import.meta.env.VITE_API_BASE_URL
-      }/api/auth/${provider}?redirectUrl=${encodeURIComponent(
-        location?.state?.job?.job_url
-      )}&filePath=${resumeFile}`;
-    else {
-      setIsResumeUpload((prev) => ({ ...prev, status: true }));
+  const HtmlTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#f5f5f9",
+      color: "rgba(0, 0, 0, 0.87)",
+      maxWidth: 220,
+      fontSize: theme.typography.pxToRem(16),
+      border: "1px solid #dadde9",
+    },
+  }));
 
-      showErrorToast("Please upload your resume");
-    }
+  const handleSocialLogin = (provider) => {
+    // if (resumeFile)
+    window.location.href = `${
+      import.meta.env.VITE_API_BASE_URL
+    }/api/auth/${provider}?redirectUrl=${encodeURIComponent(
+      location?.state?.job?.job_url
+    )}&filePath=${resumeFile}`;
+    // else {
+    //   setIsResumeUpload((prev) => ({ ...prev, status: true }));
+
+    //   showErrorToast("Please upload your resume");
+    // }
   };
 
   const handleFileChange = async (e) => {
@@ -221,28 +256,36 @@ const SocialLoginCard = () => {
 
   const onSubmit = () => {
     if (otp.status === false) sendOTP();
-    else {
-      if (resumeFile) verifyOTP();
-      else {
-        setIsResumeUpload((prev) => ({ ...prev, status: true }));
-        showErrorToast("Please upload your resume");
-      }
-    }
+    else verifyOTP();
+
+    // else {
+    //   if (resumeFile) verifyOTP();
+    //   else {
+    //     setIsResumeUpload((prev) => ({ ...prev, status: true }));
+    //     showErrorToast("Please upload your resume");
+    //   }
+    // }
   };
 
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
+  const setPadding = () => {
+    if (isLogIn) return "24px";
+    return isMobile ? "6px !important" : "30px 90px 18px 90px !important";
+  };
+
   return (
     <Card
       sx={{
         // width: "586px",
-        padding: isMobile ? "6px !important" : "30px 90px 18px 90px !important",
+        padding: setPadding(),
         borderRadius: "24px",
         background: "#FFF",
         boxShadow: "0px 0px 3px 3px rgba(0, 0, 0, 0.10)",
         marginBottom: "32px",
+        maxWidth: { maxWidth },
       }}
     >
       <CardContent>
@@ -250,7 +293,7 @@ const SocialLoginCard = () => {
           <>
             <Stack gap={2} mb={4}>
               <Stack gap={0.5}>
-                <StyledInputLabel htmlFor="name">
+                {/* <StyledInputLabel htmlFor="name">
                   Enter Your Name{" "}
                 </StyledInputLabel>
 
@@ -260,7 +303,7 @@ const SocialLoginCard = () => {
                   placeholder="Enter Your Name "
                   value={state.name}
                   onChange={handleInputChange}
-                />
+                /> */}
                 {/* {errors.email && (
                   <FormHelperText error>{errors.name}</FormHelperText>
                 )} */}
@@ -269,13 +312,28 @@ const SocialLoginCard = () => {
                 <StyledInputLabel htmlFor="email">
                   Enter Your Emaiil{" "}
                 </StyledInputLabel>
-                <StyledInput
-                  id="email"
-                  name="email"
-                  placeholder="Enter Your Email "
-                  value={state.email}
-                  onChange={handleInputChange}
-                />
+                {resumeFile ? (
+                  <StyledInput
+                    id="email"
+                    name="email"
+                    placeholder="Enter Your Email "
+                    value={state.email}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <HtmlTooltip
+                    title="upload your resume first!"
+                    placement="top-end"
+                  >
+                    <StyledInput
+                      id="email"
+                      name="email"
+                      placeholder="Enter Your Email "
+                      value={state.email}
+                      disabled
+                    />
+                  </HtmlTooltip>
+                )}
               </Stack>
             </Stack>
             <Box mb={2}>
@@ -378,17 +436,37 @@ const SocialLoginCard = () => {
                 margin: "0 auto",
               }}
             >
-              <Button
-                variant="outlined"
-                fullWidth
-                sx={OAuthButtonStyle}
-                onClick={() => handleSocialLogin("google")}
-              >
-                <GoogleIcon
-                  sx={{ width: "32px", height: "32px", marginRight: 1 }}
-                />{" "}
-                SignUp with Google
-              </Button>
+              {resumeFile ? (
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  sx={OAuthButtonStyle}
+                  onClick={() => handleSocialLogin("google")}
+                >
+                  <GoogleIcon
+                    sx={{ width: "32px", height: "32px", marginRight: 1 }}
+                  />{" "}
+                  SignUp with Google
+                </Button>
+              ) : (
+                <HtmlTooltip
+                  title="upload your resume first!"
+                  placement="top-end"
+                >
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    sx={{ ...OAuthButtonStyle, cursor: "default" }}
+                    disbled
+                  >
+                    <GoogleIcon
+                      sx={{ width: "32px", height: "32px", marginRight: 1 }}
+                    />{" "}
+                    SignUp with Google
+                  </Button>
+                </HtmlTooltip>
+              )}
+
               {/* <Button
                 variant="outlined"
                 fullWidth

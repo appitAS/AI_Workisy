@@ -9,11 +9,12 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { Avatar, IconButton, Typography } from "@mui/material";
+import { Avatar, IconButton, Modal, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import PowerSettingsNewRoundedIcon from "@mui/icons-material/PowerSettingsNewRounded";
 import useIsMobile from "./useIsMobile";
 import useJobStore from "../store/jobStore";
+import SocialLoginCard from "./AuthSection";
 
 // Custom Globe SVG Icon as a React component
 function GlobeIcon(props) {
@@ -29,39 +30,35 @@ function GlobeIcon(props) {
 }
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+
   const isMobile = useIsMobile();
+  const open = Boolean(anchorEl);
+
   const { setResumeFile } = useJobStore();
 
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElLogin, setAnchorElLogin] = useState(false);
 
   const userData = Cookies.get("user_data")
     ? JSON.parse(Cookies.get("user_data"))
     : "";
   const auth_token = Cookies.get("auth_token");
+  const randomColor = Cookies.get("profile_bg");
 
-  const getRandomColor = () => {
-    const colors = [
-      "#F44336",
-      "#E91E63",
-      "#9C27B0",
-      "#3F51B5",
-      "#2196F3",
-      "#03A9F4",
-      "#00BCD4",
-      "#009688",
-      "#4CAF50",
-      "#8BC34A",
-      "#FFC107",
-      "#FF9800",
-      "#FF5722",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    // border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
   };
-
-  const randomColor = getRandomColor();
+  console.log(userData, "userData");
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,146 +79,94 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar
-      position="fixed"
-      elevation={0}
-      sx={{
-        background: "#FFF",
-        boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-      }}
-    >
-      <Toolbar
+    <>
+      <AppBar
+        position="fixed"
+        elevation={0}
         sx={{
-          justifyContent: "space-between",
-          minHeight: 64,
-          paddingLeft: isMobile ? "16px !important" : "64px !important",
-          paddingRight: isMobile ? "16px !important" : "64px !important",
-          alignItems: "center",
+          background: "#FFF",
+          boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
         }}
       >
-        {/* Logo */}
-        <Box
-          sx={{ display: "flex", alignItems: "center" }}
-          onClick={() => navigate("/")}
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            minHeight: 64,
+            paddingLeft: isMobile ? "16px !important" : "64px !important",
+            paddingRight: isMobile ? "16px !important" : "64px !important",
+            alignItems: "center",
+          }}
         >
-          <img
-            src="/workisy logo-01.png"
-            alt="workisy logo"
-            style={{ height: 38, objectFit: "contain" }}
-          />
-        </Box>
-
-        {/* Right actions */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {/* Services Dropdown */}
-          <Button
-            startIcon={<GlobeIcon />}
-            endIcon={<ArrowDropDownIcon />}
-            onClick={handleMenuClick}
-            sx={{
-              color: "#222",
-              textTransform: "none",
-              fontWeight: 500,
-              fontSize: 15,
-              background: "transparent",
-              minWidth: 0,
-              px: 1,
-            }}
+          {/* Logo */}
+          <Box
+            sx={{ display: "flex", alignItems: "center" }}
+            onClick={() => navigate("/")}
           >
-            Services
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            MenuListProps={{
-              "aria-labelledby": "services-button",
-            }}
-          >
-            <MenuItem onClick={handleMenuClose}>AI Resume </MenuItem>
-            <MenuItem onClick={handleMenuClose}>Service 2</MenuItem>
-          </Menu>
+            <img
+              src="/workisy logo-01.png"
+              alt="workisy logo"
+              style={{ height: 38, objectFit: "contain", cursor: "pointer" }}
+            />
+          </Box>
 
-          {/* Sign Up Button */}
-          {auth_token ? (
-            <>
-              <IconButton
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  padding: "4px 8px",
-                  borderRadius: "20px",
-                  border: "1px solid #e0e0e0",
-                  backgroundColor: "#fff",
-                }}
-                onClick={(e) => setAnchorElUser(e.currentTarget)}
-              >
-                <MenuIcon
-                  sx={{ fontSize: 18, marginRight: 2, color: "#757575" }}
-                />
-                <Avatar
+          {/* Right actions */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {/* Services Dropdown */}
+            <Button
+              startIcon={<GlobeIcon />}
+              endIcon={<ArrowDropDownIcon />}
+              onClick={handleMenuClick}
+              sx={{
+                color: "#222",
+                textTransform: "none",
+                fontWeight: 500,
+                fontSize: 15,
+                background: "transparent",
+                minWidth: 0,
+                px: 1,
+              }}
+            >
+              Services
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleMenuClose}
+              MenuListProps={{
+                "aria-labelledby": "services-button",
+              }}
+            >
+              <MenuItem onClick={handleMenuClose}>AI Resume </MenuItem>
+              <MenuItem onClick={handleMenuClose}>Service 2</MenuItem>
+            </Menu>
+
+            {/* Sign Up Button */}
+            {auth_token ? (
+              <>
+                <IconButton
                   sx={{
-                    width: 30,
-                    height: 30,
-                    bgcolor: !userData?.profile_img?.trim()
-                      ? randomColor
-                      : "transparent",
-                  }}
-                  src={userData.profile_img}
-                >
-                  {/* <PersonIcon /> */}
-
-                  {(!userData.profile_img ||
-                    userData.profile_img.trim() === "") &&
-                  userData.name
-                    ? userData.name.charAt(0).toUpperCase()
-                    : null}
-                </Avatar>
-              </IconButton>
-              <Menu
-                sx={{
-                  mt: "45px",
-                  p: 2,
-                  "& .MuiPaper-root.MuiPaper-elevation": {
-                    borderRadius: "12px",
-                  },
-
-                  "& .MuiList-root.MuiList-padding": {
-                    padding: 2,
-                  },
-                }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={() => setAnchorElUser(null)}
-              >
-                <Box
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
+                    display: "inline-flex",
                     alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "20px",
+                    border: "1px solid #e0e0e0",
+                    backgroundColor: "#fff",
                   }}
+                  onClick={(e) => setAnchorElUser(e.currentTarget)}
                 >
+                  <MenuIcon
+                    sx={{ fontSize: 18, marginRight: 2, color: "#757575" }}
+                  />
                   <Avatar
                     sx={{
-                      width: 56,
-                      height: 56,
-                      mb: 1,
+                      width: 30,
+                      height: 30,
                       bgcolor: !userData?.profile_img?.trim()
                         ? randomColor
                         : "transparent",
+                      border: "1px solid #e0e0e0",
                     }}
-                    src={userData.profile_img}
+                    src={userData?.profile_img}
                   >
                     {/* <PersonIcon /> */}
 
@@ -231,56 +176,120 @@ export default function Navbar() {
                       ? userData.name.charAt(0).toUpperCase()
                       : null}
                   </Avatar>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    {userData.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {userData.email}
-                  </Typography>
-                </Box>
-
-                <Button
-                  onClick={handleLogout}
-                  fullWidth
-                  startIcon={<PowerSettingsNewRoundedIcon />}
+                </IconButton>
+                <Menu
                   sx={{
-                    borderRadius: "24px",
-                    background: "#fa0202",
-                    color: "#FFF",
-                    textTransform: "capitalize",
+                    mt: "45px",
+                    p: 2,
+                    "& .MuiPaper-root.MuiPaper-elevation": {
+                      borderRadius: "12px",
+                    },
+
+                    "& .MuiList-root.MuiList-padding": {
+                      padding: 2,
+                    },
                   }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={() => setAnchorElUser(null)}
                 >
-                  Logout
-                </Button>
-              </Menu>
-            </>
-          ) : (
-            <Button
-              variant="contained"
-              startIcon={<PersonIcon />}
-              onClick={() => !userData.email && navigate("/signup")}
-              sx={{
-                background: "#222",
-                color: "#fff",
-                textTransform: "none",
-                borderRadius: "20px",
-                fontWeight: 500,
-                fontSize: 14,
-                px: 2,
-                py: 1,
-                pointerEvents: userData.email ? "none" : "auto",
-                boxShadow: "none",
-                "&:hover": {
-                  background: "#111",
+                  <Box
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Avatar
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        mb: 1,
+                        bgcolor: !userData?.profile_img?.trim()
+                          ? randomColor
+                          : "transparent",
+                      }}
+                      src={userData.profile_img}
+                    >
+                      {/* <PersonIcon /> */}
+
+                      {(!userData.profile_img ||
+                        userData.profile_img.trim() === "") &&
+                      userData.name
+                        ? userData.name.charAt(0).toUpperCase()
+                        : null}
+                    </Avatar>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {userData.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {userData.email}
+                    </Typography>
+                  </Box>
+
+                  <Button
+                    onClick={handleLogout}
+                    fullWidth
+                    startIcon={<PowerSettingsNewRoundedIcon />}
+                    sx={{
+                      borderRadius: "24px",
+                      background: "#fa0202",
+                      color: "#FFF",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                variant="contained"
+                startIcon={<PersonIcon />}
+                onClick={() => setAnchorElLogin(true)}
+                sx={{
+                  background: "#222",
+                  color: "#fff",
+                  textTransform: "none",
+                  borderRadius: "20px",
+                  fontWeight: 500,
+                  fontSize: 14,
+                  px: 2,
+                  py: 1,
+                  pointerEvents: userData.email ? "none" : "auto",
                   boxShadow: "none",
-                },
-              }}
-            >
-              Sign Up
-            </Button>
-          )}
+                  "&:hover": {
+                    background: "#111",
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Login / Sign Up
+              </Button>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Modal open={anchorElLogin} onClose={() => setAnchorElLogin(false)}>
+        <Box style={style}>
+          <SocialLoginCard
+            maxWidth={560}
+            isLogIn
+            setAnchorElLogin={setAnchorElLogin}
+          />
         </Box>
-      </Toolbar>
-    </AppBar>
+      </Modal>
+    </>
   );
 }

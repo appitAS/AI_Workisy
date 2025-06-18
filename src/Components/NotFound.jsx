@@ -102,7 +102,9 @@ const NotFound = () => {
               fontSize: { xs: "1.25rem", sm: "1.5rem" },
             }}
           >
-            {error?.message || "Oops! Something went wrong."}
+            {/* {error?.message || "Oops! Something went wrong."} */}
+            Our current AI model is not available right now. You can try another
+            model.
           </Typography>
 
           <Button

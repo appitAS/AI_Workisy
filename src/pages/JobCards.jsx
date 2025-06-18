@@ -83,6 +83,25 @@ const JobCard = () => {
   //   }
   // }, []);
 
+  const getRandomColor = () => {
+    const colors = [
+      "#F44336",
+      "#E91E63",
+      "#9C27B0",
+      "#3F51B5",
+      "#2196F3",
+      "#03A9F4",
+      "#00BCD4",
+      "#009688",
+      "#4CAF50",
+      "#8BC34A",
+      "#FFC107",
+      "#FF9800",
+      "#FF5722",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
@@ -95,6 +114,9 @@ const JobCard = () => {
       document.cookie = `user_data=${encodeURIComponent(
         userData
       )}; path=/; max-age=86400; SameSite=None; Secure`;
+
+      if (!userData?.user_data?.profile_img)
+        Cookies.set("profile_bg", getRandomColor());
     }
 
     // ✅ Handle jobUrl redirection
