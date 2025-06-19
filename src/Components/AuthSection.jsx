@@ -312,23 +312,24 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
                 <StyledInputLabel htmlFor="email">
                   Enter Your Emaiil{" "}
                 </StyledInputLabel>
-                {resumeFile ? (
+
+                {isLogIn || resumeFile ? (
                   <StyledInput
                     id="email"
                     name="email"
-                    placeholder="Enter Your Email "
+                    placeholder="Enter Your Email"
                     value={state.email}
                     onChange={handleInputChange}
                   />
                 ) : (
                   <HtmlTooltip
-                    title="upload your resume first!"
+                    title="Upload your resume first!"
                     placement="top-end"
                   >
                     <StyledInput
                       id="email"
                       name="email"
-                      placeholder="Enter Your Email "
+                      placeholder="Enter Your Email"
                       value={state.email}
                       disabled
                     />
@@ -436,7 +437,7 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
                 margin: "0 auto",
               }}
             >
-              {resumeFile ? (
+              {isLogIn || resumeFile ? (
                 <Button
                   variant="outlined"
                   fullWidth
