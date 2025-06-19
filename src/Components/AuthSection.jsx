@@ -590,6 +590,10 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
               )}
             </Stack>
             <Box mt={3}>
+              <Typography sx={{ marginBottom: "16px" }}>
+                <span style={{ color: "red" }}>Note:</span> Please check the OTP
+                inbox or spam folder in your email.
+              </Typography>
               <Button
                 variant="contained"
                 color="primary"
