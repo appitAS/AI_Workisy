@@ -216,6 +216,7 @@ export default function Navbar() {
                         width: 56,
                         height: 56,
                         mb: 1,
+                        border: "1px solid #e0e0e0",
                         bgcolor: !userData?.profile_img?.trim()
                           ? randomColor
                           : "transparent",

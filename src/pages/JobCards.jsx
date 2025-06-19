@@ -8,7 +8,10 @@ import {
   Stack,
   Button,
   Avatar,
+  styled,
 } from "@mui/material";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+
 import Cookies from "js-cookie";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -102,6 +105,18 @@ const JobCard = () => {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  const HtmlTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#f5f5f9",
+      color: "rgba(0, 0, 0, 0.87)",
+      maxWidth: 270,
+      fontSize: theme.typography.pxToRem(16),
+      border: "1px solid #dadde9",
+      Padding: "8px",
+    },
+  }));
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
@@ -252,12 +267,27 @@ const JobCard = () => {
                         >
                           Job Description
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: "#666", mb: 1.5, lineHeight: 1.5 }}
+                        <HtmlTooltip
+                          title={job.job_description}
+                          placement="top"
                         >
-                          {job.job_description}
-                        </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "#666",
+                              mb: 1.5,
+                              lineHeight: 1.5,
+                              display: "-webkit-box",
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              wordBreak: "break-word",
+                            }}
+                          >
+                            {job.job_description}
+                          </Typography>
+                        </HtmlTooltip>
 
                         <Typography
                           variant="subtitle2"
@@ -269,7 +299,12 @@ const JobCard = () => {
                           direction="row"
                           flexWrap="wrap"
                           spacing={1}
-                          sx={{ mb: 2, rowGap: 0.3 }}
+                          sx={{
+                            mb: 2,
+                            rowGap: 0.3,
+                            maxHeight: "6.5rem",
+                            overflow: "hidden",
+                          }}
                         >
                           {job.skills?.map((skill, idx) => (
                             <Chip
@@ -281,8 +316,8 @@ const JobCard = () => {
                                 borderColor: "#D2E8FF",
                                 color: "#1976d2",
                                 fontWeight: 500,
-                                mt: 2,
-                                mb: 2,
+                                mt: 0.5,
+                                mb: 0.5,
                                 borderRadius: 3,
                                 fontSize: 13,
                               }}
