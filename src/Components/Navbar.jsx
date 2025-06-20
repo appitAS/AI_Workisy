@@ -47,7 +47,7 @@ export default function Navbar() {
   const auth_token = Cookies.get("auth_token");
   const randomColor = Cookies.get("profile_bg");
 
-  console.log(userData, "user");
+  console.log(userData, "userData");
 
   const style = {
     position: "absolute",
