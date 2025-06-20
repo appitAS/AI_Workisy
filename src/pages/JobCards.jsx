@@ -49,10 +49,14 @@ export const CompanyLogoOrAvatar = ({ logo, company }) => (
 
 const JobCard = () => {
   const { jobs, isLoading, prompt, error } = useJobStore();
+
   const location = useLocation();
   const navigate = useNavigate();
-
   const hasOpened = useRef(false);
+
+  const userData = Cookies.get("user_data")
+    ? JSON.parse(Cookies.get("user_data"))
+    : "";
 
   const getValidUrl = (url) => {
     if (!url) return "#";
@@ -67,7 +71,11 @@ const JobCard = () => {
 
   const handleViewJob = (job) => {
     if (isUserLoggedIn()) {
-      window.open(getValidUrl(job.job_url), "_blank");
+      if (!userData?.resume_id)
+        navigate("/upload-resume", {
+          state: { job: { ...job, job_url: getValidUrl(job.job_url) } },
+        });
+      else window.open(getValidUrl(job.job_url), "_blank");
     } else {
       navigate("/signup", {
         state: { job: { ...job, job_url: getValidUrl(job.job_url) } },
@@ -117,6 +125,7 @@ const JobCard = () => {
       Padding: "8px",
     },
   }));
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 

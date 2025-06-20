@@ -1,16 +1,20 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import ResumeUploader from "../Components/ResumeUploader";
-import AuthSection from "../Components/AuthSection";
 import JobCard from "../Components/AuthJobCard";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useIsMobile from "../Components/useIsMobile";
 import useJobStore from "../store/jobStore";
 
-const MainPage = () => {
+const UploadResume = () => {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { resumeFile } = useJobStore();
 
+  const onSubmit = () => {
+    if (state?.job?.job_url) window.open(state?.job?.job_url, "_blank");
+    navigate("/");
+  };
   return (
     <Box
       sx={
@@ -49,8 +53,31 @@ const MainPage = () => {
         )}
         <Grid item xs={12} md={7} flex={1}>
           <>
-            <AuthSection />
-            {!isMobile && state?.job && <JobCard job={state.job} />}
+            <JobCard job={state.job} />
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={!resumeFile}
+              sx={{
+                borderRadius: "24px",
+                background: "#0066B3",
+                boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+                textTransform: "capitalize",
+                padding: "10px",
+                marginTop: "16px",
+
+                "&.Mui-disabled": {
+                  opacity: 0.5,
+                  background: "#1976d2",
+                  color: "#FFF",
+                  cursor: "not-allowed",
+                },
+              }}
+              onClick={onSubmit}
+            >
+              Confirm Apply
+            </Button>
           </>
         </Grid>
       </Stack>
@@ -58,4 +85,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default UploadResume;

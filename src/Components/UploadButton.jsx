@@ -31,7 +31,6 @@ export default function UploadButton() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Resume Uploaded Successfully", data);
       setResumeFile(data?.filePath);
     } catch (error) {
       console.error(
@@ -84,7 +83,13 @@ export default function UploadButton() {
       }
     } catch (error) {
       showErrorToast("Failed to upload resume. Try again.");
-      setError({ status: 404, message: "Failed to upload resume. Try again." });
+      setError({
+        status: 404,
+        message:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Failed to upload resume. Try again.",
+      });
     } finally {
       setIsLoading(false);
     }

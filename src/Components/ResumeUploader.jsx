@@ -16,15 +16,18 @@ import useJobStore from "../store/jobStore";
 import FileRenderer from "./FileRenderer";
 import axios from "axios";
 import endpoints from "../utils/endPoint";
+import Cookies from "js-cookie";
 
 export default function ResumeUploader() {
   const { resumeFile, setResumeFile } = useJobStore();
 
-  console.log(resumeFile, "resme");
-
   const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef();
+
+  const userData = Cookies.get("user_data")
+    ? JSON.parse(Cookies.get("user_data"))
+    : "";
 
   const uploadResume = async (file) => {
     try {
@@ -32,12 +35,20 @@ export default function ResumeUploader() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const { data } = await axios.post(endpoints.uploadResume.url, formData, {
+      const endPoint = userData?.id
+        ? `${endpoints.uploadResume.url}/${userData.id}`
+        : endpoints.uploadResume.url;
+
+      const { data } = await axios.post(endPoint, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Resume Uploaded Successfully", data);
       setResumeFile(data?.filePath);
+      if (userData?.id)
+        Cookies.set(
+          "user_data",
+          JSON.stringify({ ...userData, resume_id: data?.resume_id })
+        );
     } catch (error) {
       console.error(
         "Error uploading resume:",
@@ -45,7 +56,7 @@ export default function ResumeUploader() {
       );
       showErrorToast("Resume upload failed. Please try again.");
     } finally {
-      setTimeout(() => setLoading(false), 2000);
+      setTimeout(() => setLoading(false), 1000);
     }
   };
 
@@ -119,6 +130,7 @@ export default function ResumeUploader() {
         display="flex"
         justifyContent="center"
         alignItems="center"
+        position="relative"
         // eslint-disable-next-line no-extra-boolean-cast
         sx={!!resumeFile ? { height: "100%" } : {}}
       >

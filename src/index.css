@@ -36,3 +36,11 @@ body {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.react-pdf__Page__canvas {
+  border-radius: 16px;
+}
+
+.react-pdf__Page__annotations.annotationLayer {
+  display: none;
+}

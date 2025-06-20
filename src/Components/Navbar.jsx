@@ -47,6 +47,8 @@ export default function Navbar() {
   const auth_token = Cookies.get("auth_token");
   const randomColor = Cookies.get("profile_bg");
 
+  console.log(userData, "user");
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -58,7 +60,6 @@ export default function Navbar() {
     boxShadow: 24,
     p: 4,
   };
-  console.log(userData, "userData");
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -167,6 +168,7 @@ export default function Navbar() {
                       border: "1px solid #e0e0e0",
                     }}
                     src={userData?.profile_img}
+                    key={userData?.profile_img}
                   >
                     {/* <PersonIcon /> */}
 
@@ -221,7 +223,8 @@ export default function Navbar() {
                           ? randomColor
                           : "transparent",
                       }}
-                      src={userData.profile_img}
+                      src={userData?.profile_img}
+                      key={userData?.profile_img}
                     >
                       {/* <PersonIcon /> */}
 

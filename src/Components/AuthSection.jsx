@@ -82,7 +82,6 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Resume Uploaded Successfully", response.data);
       setResumeFile(response.data.filePath);
       showSuccessToast("Resume Uploaded Successfully");
     } catch (error) {
@@ -164,7 +163,6 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
       });
 
       const { data } = response;
-      console.log("OTP Verified Successfully", data);
       if (setAnchorElLogin) setAnchorElLogin(false);
       if (data.error) showErrorToast(data.message);
       else {
