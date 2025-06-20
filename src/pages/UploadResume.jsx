@@ -53,7 +53,7 @@ const UploadResume = () => {
         )}
         <Grid item xs={12} md={7} flex={1}>
           <>
-            <JobCard job={state.job} />
+            <JobCard job={state?.job} />
             <Button
               variant="contained"
               color="primary"

@@ -71,6 +71,7 @@ const JobCard = () => {
 
   const handleViewJob = (job) => {
     if (isUserLoggedIn()) {
+      console.log(!userData?.resume_id, "!userData?.resume_id");
       if (!userData?.resume_id)
         navigate("/upload-resume", {
           state: { job: { ...job, job_url: getValidUrl(job.job_url) } },
