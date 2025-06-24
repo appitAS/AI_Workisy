@@ -66,15 +66,8 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white relative overflow-hidden">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fillOpacity='0.03'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+    <footer className="bg-gray-900 text-white border-t border-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
@@ -86,7 +79,7 @@ const Footer = () => {
                 className="h-10 w-auto object-contain"
               />
             </div>
-            <p className="text-gray-300 mb-6 max-w-md">
+            <p className="text-gray-400 mb-6 max-w-md">
               AI-powered job search platform connecting talented professionals with their dream careers. 
               Join over 1.2 million job seekers who trust Workisy to find their next opportunity.
             </p>
@@ -97,7 +90,7 @@ const Footer = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-300 hover:text-white transition-colors duration-300 p-2 rounded-lg hover:bg-white/10 backdrop-blur-sm"
+                  className="text-gray-400 hover:text-white transition-colors duration-300 p-2 rounded-lg hover:bg-gray-800"
                 >
                   {social.icon}
                 </a>
@@ -107,13 +100,13 @@ const Footer = () => {
 
           {/* Company Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Company</h3>
+            <h3 className="text-lg font-semibold mb-4">Company</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <button
                     onClick={() => navigate(link.href)}
-                    className="text-gray-300 hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform"
+                    className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
                   >
                     {link.name}
                   </button>
@@ -124,13 +117,13 @@ const Footer = () => {
 
           {/* Services Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Services</h3>
+            <h3 className="text-lg font-semibold mb-4">Services</h3>
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.name}>
                   <button
                     onClick={() => navigate(link.href)}
-                    className="text-gray-300 hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform"
+                    className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
                   >
                     {link.name}
                   </button>
@@ -141,13 +134,13 @@ const Footer = () => {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Legal</h3>
+            <h3 className="text-lg font-semibold mb-4">Legal</h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <button
                     onClick={() => navigate(link.href)}
-                    className="text-gray-300 hover:text-white transition-colors duration-300 text-left hover:translate-x-1 transform"
+                    className="text-gray-400 hover:text-white transition-colors duration-300 text-left"
                   >
                     {link.name}
                   </button>
@@ -157,36 +150,11 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter Signup */}
-        {/* <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="mb-6 lg:mb-0">
-              <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
-              <p className="text-gray-400">Get the latest job opportunities and career tips delivered to your inbox.</p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 lg:max-w-md">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
-              />
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300 whitespace-nowrap">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div> */}
-
         {/* Bottom Bar */}
-        <div className="border-t border-white/20 mt-8 pt-8 flex flex-col md:flex-row md:items-center md:justify-between">
-          <p className="text-gray-300 text-sm">
+        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row md:items-center md:justify-between">
+          <p className="text-gray-400 text-sm">
             © {currentYear} Workisy. All rights reserved.
           </p>
-          {/* <div className="flex items-center space-x-6 mt-4 md:mt-0">
-            <p className="text-gray-400 text-sm">
-              Made with ❤️ for job seekers worldwide
-            </p>
-          </div> */}
         </div>
       </div>
     </footer>
