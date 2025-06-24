@@ -8,7 +8,6 @@ import UploadButton from "../Components/UploadButton";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useSEO } from "../utils/useSEO.jsx";
 
 const GradientText = styled("span")({
   background: "linear-gradient(134deg, #8E2DE2 1.47%, #4A00E0 94.07%)",
@@ -20,15 +19,6 @@ const GradientText = styled("span")({
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // SEO Meta Tags for Homepage
-  const seoComponent = useSEO({
-    title: "Workisy - AI-Powered Job Search Engine",
-    description: "AI-powered job matching platform with direct access to 12,70,000+ jobs worldwide. Upload your resume and get matched with your dream career using our advanced AI technology.",
-    keywords: "AI job search, job matching, career opportunities, resume upload, job recommendations, AI powered jobs, workisy, job portal",
-    ogTitle: "Workisy - AI-Powered Job Search Engine",
-    ogDescription: "Discover your dream job with AI-powered matching. Access 1.27 million+ jobs worldwide and get personalized recommendations based on your skills and experience."
-  });
 
   const getRandomColor = () => {
     const colors = [
@@ -68,23 +58,21 @@ export default function Layout() {
   }, []);
 
   return (
-    <>
-      {seoComponent}
-      <Box
-        sx={{
-          height: "100vh",
-          width: "100vw",
-          overflow: "hidden",
-          backgroundImage: `url("/BANNER.jpg"), linear-gradient(120deg, #f8fbff 60%, #f6f7fc 100%)`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "left top",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+        backgroundImage: `url("/BANNER.jpg"), linear-gradient(120deg, #f8fbff 60%, #f6f7fc 100%)`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "left top",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Box sx={{ textAlign: "center" }}>
         <Typography
           variant="h3"
@@ -204,6 +192,5 @@ export default function Layout() {
         </Typography>
       </Box>
     </Box>
-    </>
   );
 }
