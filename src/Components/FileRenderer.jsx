@@ -6,8 +6,7 @@ import {
   NavigateNextRounded as NavigateNextRoundedIcon,
 } from "@mui/icons-material";
 
-// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
 const FileRenderer = ({ file }) => {
   const [iframeHeight, setIframeHeight] = useState(window.innerHeight - 220);

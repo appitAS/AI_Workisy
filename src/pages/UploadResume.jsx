@@ -19,11 +19,11 @@ const UploadResume = () => {
     <Box
       sx={
         isMobile
-          ? { p: 4 }
+          ? { p: 4, marginTop: "5rem" }
           : {
               p: 4,
               maxWidth: "calc(100vw - 250px)",
-              margin: "0 auto",
+              margin: "5rem auto 0 auto",
             }
       }
     >
@@ -53,7 +53,7 @@ const UploadResume = () => {
         )}
         <Grid item xs={12} md={7} flex={1}>
           <>
-            <JobCard job={state.job} />
+            <JobCard job={state?.job} />
             <Button
               variant="contained"
               color="primary"
