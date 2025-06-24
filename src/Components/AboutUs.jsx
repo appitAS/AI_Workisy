@@ -615,11 +615,10 @@ const AboutUs = () => {
                   sx={{
                     position: "absolute",
                     inset: 0,
-                    display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     background: "#e8f0fe",
-                    display: "none",
+                    display: "none"
                   }}
                 >
                   <Stack alignItems="center" spacing={2}>

@@ -6,7 +6,7 @@ export const useSEO = ({
   keywords = "jobs, AI, career, resume, job matching, employment, workisy, job search",
   ogTitle,
   ogDescription,
-  ogImage = "/public/workisy logo-01.png",
+  ogImage = "/workisy logo-01.png",
   ogUrl,
   twitterCard = "summary_large_image",
   canonicalUrl,
