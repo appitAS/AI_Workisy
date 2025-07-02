@@ -4,6 +4,8 @@ import JobCard from "../Components/AuthJobCard";
 import { useLocation, useNavigate } from "react-router-dom";
 import useIsMobile from "../Components/useIsMobile";
 import useJobStore from "../store/jobStore";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 const UploadResume = () => {
   const { state } = useLocation();
@@ -11,10 +13,21 @@ const UploadResume = () => {
   const isMobile = useIsMobile();
   const { resumeFile } = useJobStore();
 
+  const userData = Cookies.get("user_data")
+    ? JSON.parse(Cookies.get("user_data"))
+    : "";
+
   const onSubmit = () => {
     if (state?.job?.job_url) window.open(state?.job?.job_url, "_blank");
     navigate("/");
   };
+
+  useEffect(() => {
+    if (!userData.id) navigate("/");
+  }, [navigate, userData.id]);
+
+  if (!userData.id) return null;
+
   return (
     <Box
       sx={
