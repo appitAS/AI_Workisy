@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import { Document, Page } from "react-pdf";
 import { Box, IconButton, Stack } from "@mui/material";
 import {
   NavigateBeforeRounded as NavigateBeforeRoundedIcon,
   NavigateNextRounded as NavigateNextRoundedIcon,
 } from "@mui/icons-material";
-
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
 const FileRenderer = ({ file }) => {
   const [iframeHeight, setIframeHeight] = useState(window.innerHeight - 220);

@@ -5,6 +5,9 @@ import Layout from "./pages/Layout";
 import JobCards from "./pages/JobCards";
 import UploadResume from "./pages/UploadResume";
 import MainPage from "./pages/AuthMainPage";
+import { pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
 const App = () => {
   return (
