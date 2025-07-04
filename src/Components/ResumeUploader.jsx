@@ -44,6 +44,7 @@ export default function ResumeUploader() {
       });
 
       setResumeFile(data?.filePath);
+      console.log(data, "Resume");
       if (userData?.id)
         Cookies.set(
           "user_data",
