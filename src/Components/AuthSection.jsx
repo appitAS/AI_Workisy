@@ -311,7 +311,7 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
                 )} */}
               </Stack>
               <Stack gap={0.5}>
-                {isMobile && (
+                {isMobile && !isLogIn && (
                   <>
                     <StyledInputLabel>
                       Upload your resume first
