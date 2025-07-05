@@ -102,7 +102,7 @@ export default function ResumeUploader() {
       elevation={3}
       sx={{
         bgcolor: "#e8f0fe",
-        padding: "48px",
+        padding: "16px",
         borderRadius: 3,
         position: "relative",
         // eslint-disable-next-line no-extra-boolean-cast
@@ -119,6 +119,7 @@ export default function ResumeUploader() {
             padding: "4px",
             background: "#FFF",
             color: "#fa0202",
+            zIndex: 1,
             boxShadow: "0px 0px 3px 3px rgba(0, 0, 0, 0.10)",
           }}
           onClick={() => setResumeFile(null)}

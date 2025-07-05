@@ -271,7 +271,11 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
 
   const setPadding = () => {
     if (isLogIn) return "24px";
-    return isMobile ? "6px !important" : "30px 90px 18px 90px !important";
+    return isMobile
+      ? "6px !important"
+      : resumeFile
+      ? "24px !important"
+      : "30px 60px 18px 60px !important";
   };
 
   return (
@@ -307,6 +311,73 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
                 )} */}
               </Stack>
               <Stack gap={0.5}>
+                {isMobile && (
+                  <>
+                    <StyledInputLabel>
+                      Upload your resume first
+                    </StyledInputLabel>
+                    <Stack mt={0.5} mb={2} sx={{ position: "relative" }}>
+                      <input
+                        type="file"
+                        hidden
+                        onChange={handleFileChange}
+                        accept=".pdf,.doc,.docx"
+                        ref={fileInputRef}
+                      />
+                      <Stack
+                        flexDirection="row"
+                        alignItems="center"
+                        onClick={() => fileInputRef.current.click()}
+                        sx={{
+                          // background: "#DFF0FF",
+                          border: "1px solid #b3bac5",
+                          borderRadius: "8px",
+                          // boxShadow: "4px 4px 4px 4px rgba(10, 102, 194, 0.25)",
+                          padding: "8px 34px 8px 8px",
+                          gap: "8px",
+                        }}
+                      >
+                        <AttachFileRoundedIcon
+                          sx={{
+                            borderRight: "2px solid #b3bac5",
+                            paddingRight: "4px",
+                            width: "1.2em",
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            whiteSpace: "nowrap",
+                            overflowX: "auto",
+                            display: "block",
+                            maxWidth: "100%",
+                          }}
+                        >
+                          {isResumeUpload.fileName
+                            ? isResumeUpload.fileName
+                            : "Choose the file"}
+                        </Typography>
+                      </Stack>
+                      {isResumeUpload.file && (
+                        <CloseRoundedIcon
+                          sx={{
+                            position: "absolute",
+                            right: "8px",
+                            top: "9px",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setResumeFile(null);
+                            setIsResumeUpload((prev) => ({
+                              ...prev,
+                              file: null,
+                              fileName: "",
+                            }));
+                          }}
+                        />
+                      )}
+                    </Stack>
+                  </>
+                )}
                 <StyledInputLabel htmlFor="email">
                   Enter Your Emaiil{" "}
                 </StyledInputLabel>
@@ -363,66 +434,6 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
             <Stack alignItems="center" mb={2}>
               <Typography> ---------- Or ----------</Typography>
             </Stack>
-
-            {isMobile && isResumeUpload.status && (
-              <Stack mt={2} mb={2} sx={{ position: "relative" }}>
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx"
-                  ref={fileInputRef}
-                />
-                <Stack
-                  flexDirection="row"
-                  alignItems="center"
-                  onClick={() => fileInputRef.current.click()}
-                  sx={{
-                    // background: "#DFF0FF",
-                    border: "1px solid #b3bac5",
-                    borderRadius: "8px",
-                    // boxShadow: "4px 4px 4px 4px rgba(10, 102, 194, 0.25)",
-                    padding: "8px 34px 8px 8px",
-                    gap: "8px",
-                  }}
-                >
-                  <AttachFileRoundedIcon
-                    sx={{
-                      borderRight: "2px solid #b3bac5",
-                      paddingRight: "4px",
-                      width: "1.2em",
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      whiteSpace: "nowrap",
-                      overflowX: "auto",
-                      display: "block",
-                      maxWidth: "100%",
-                    }}
-                  >
-                    {isResumeUpload.fileName
-                      ? isResumeUpload.fileName
-                      : "Choose the file"}
-                  </Typography>
-                </Stack>
-                {isResumeUpload.file && (
-                  <CloseRoundedIcon
-                    sx={{ position: "absolute", right: "8px", top: "9px" }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setResumeFile(null);
-                      setIsResumeUpload((prev) => ({
-                        ...prev,
-                        file: null,
-                        fileName: "",
-                      }));
-                    }}
-                  />
-                )}
-              </Stack>
-            )}
-
             <Stack
               sx={{
                 borderRadius: "8px",
