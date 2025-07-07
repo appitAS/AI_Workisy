@@ -13,10 +13,7 @@ import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./Components/AboutUs";
 
-import { pdfjs } from "react-pdf";
 import OAuthSuccess from "./pages/OAuthSuccess";
-
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
 const App = () => {
   return (
