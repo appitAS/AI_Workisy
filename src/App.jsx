@@ -14,6 +14,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./Components/AboutUs";
 
 import { pdfjs } from "react-pdf";
+import OAuthSuccess from "./pages/OAuthSuccess";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
@@ -32,6 +33,7 @@ const App = () => {
               <Route path="/jobs" element={<JobCards />} />
               <Route path="/signup" element={<MainPage />} />
               <Route path="/upload-resume" element={<UploadResume />} />
+              <Route path="/signup-sucess" element={<OAuthSuccess />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/terms-conditions" element={<TermsConditions />} />

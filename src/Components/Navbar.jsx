@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Avatar, Modal, Box } from "@mui/material";
-import useIsMobile from "./useIsMobile";
+// import useIsMobile from "./useIsMobile";
 import useJobStore from "../store/jobStore";
 import SocialLoginCard from "./AuthSection";
 
@@ -24,7 +24,7 @@ function GlobeIcon(props) {
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
   const { setResumeFile } = useJobStore();
 
   // State management
@@ -123,7 +123,7 @@ export default function Navbar() {
                       </button>
                       <button
                         onClick={() => {
-                          navigate("/upload-resume");
+                          navigate("/");
                           setServicesMenuOpen(false);
                         }}
                         className="w-full text-left px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 transform hover:translate-x-2"
@@ -344,7 +344,7 @@ export default function Navbar() {
                     </button>
                     <button
                       onClick={() => {
-                        navigate("/upload-resume");
+                        navigate("/");
                         setIsMobileMenuOpen(false);
                         setServicesMenuOpen(false);
                       }}

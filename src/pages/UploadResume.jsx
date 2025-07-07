@@ -43,7 +43,7 @@ const UploadResume = () => {
 
   const onSubmit = () => {
     if (state?.job?.job_url) window.open(state?.job?.job_url, "_blank");
-    navigate("/");
+    navigate("/jobs");
   };
 
   const uploadResume = async (file) => {
@@ -93,8 +93,8 @@ const UploadResume = () => {
   };
 
   useEffect(() => {
-    if (!userData.id) navigate("/");
-  }, [navigate, userData.id]);
+    if (!userData.id || !state?.job) navigate("/");
+  }, [navigate, state?.job, userData.id]);
 
   if (!userData.id) return null;
 

@@ -4,12 +4,10 @@ import AuthSection from "../Components/AuthSection";
 import JobCard from "../Components/AuthJobCard";
 import { useLocation } from "react-router-dom";
 import useIsMobile from "../Components/useIsMobile";
-import useJobStore from "../store/jobStore";
 
 const MainPage = () => {
   const { state } = useLocation();
   const isMobile = useIsMobile();
-  const { resumeFile } = useJobStore();
 
   return (
     <Box
@@ -43,7 +41,7 @@ const MainPage = () => {
       </Typography>
       <Stack flexDirection="row" gap={4} justifyContent="center">
         {!isMobile && (
-          <Grid item xs={12} md={5} sx={resumeFile ? {} : { flex: 1 }}>
+          <Grid item xs={12} md={5} sx={{ flex: 1 }}>
             <ResumeUploader />
           </Grid>
         )}

@@ -31,7 +31,7 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
 
-  const { resumeFile, setResumeFile } = useJobStore();
+  const { resumeFile, setResumeFile, jobs } = useJobStore();
 
   const [state, setState] = useState({ name: "", email: "" });
   const [otp, setOtp] = useState({ otp: "", status: false });
@@ -231,6 +231,13 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
     }/api/auth/${provider}?redirectUrl=${encodeURIComponent(
       location?.state?.job?.job_url
     )}&filePath=${resumeFile}`;
+    if (!isLogIn) {
+      localStorage.setItem("jobs", JSON.stringify(jobs));
+      localStorage.setItem(
+        "selected_job",
+        JSON.stringify(location?.state?.job)
+      );
+    }
     // else {
     //   setIsResumeUpload((prev) => ({ ...prev, status: true }));
 
@@ -372,6 +379,9 @@ const SocialLoginCard = ({ maxWidth, isLogIn, setAnchorElLogin }) => {
                               file: null,
                               fileName: "",
                             }));
+
+                            if (fileInputRef.current)
+                              fileInputRef.current.value = null;
                           }}
                         />
                       )}
