@@ -27,7 +27,7 @@ const ResumeUploader = () => {
 
   const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(100);
   const fileInputRef = useRef();
 
   const userData = Cookies.get("user_data")
